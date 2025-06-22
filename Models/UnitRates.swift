@@ -29,3 +29,7 @@ struct UnitRates: Decodable {
         case paymentMethod = "payment_method"
     }
 }
+
+enum TariffCodes: String, CaseIterable {
+    case agileOct2024 = "AGILE-24-10-01"
+}
