@@ -7,30 +7,30 @@
 
 import WidgetKit
 import SwiftUI
+import AppIntents
 
-struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+struct DetailProvider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> OctopusWidgetEntry {
+        OctopusWidgetEntry(date: Date(), fromDate: Date(), toDate: Date(), isError: true, isPostcode: true, pricePerKWh: 0.10)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
-        completion(entry)
+    func snapshot(for configuration: InsertPostcodeIntent, in context: Context) async -> OctopusWidgetEntry {
+        OctopusWidgetEntry(date: Date(), fromDate: Date(), toDate: Date(), isError: true, isPostcode: true, pricePerKWh: 0.10)
     }
-
-    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
+    
+    func timeline(for configuration: Intent, in context: Context) async -> Timeline<OctopusWidgetEntry> {
+        var entries: [OctopusWidgetEntry] = []
 
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
+            let entry = OctopusWidgetEntry(date: entryDate, fromDate: entryDate, toDate: entryDate, isError: true, isPostcode: true, pricePerKWh: 0.10)
             entries.append(entry)
         }
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
+        return timeline
     }
 
 //    func relevances() async -> WidgetRelevances<Void> {
@@ -38,22 +38,48 @@ struct Provider: TimelineProvider {
 //    }
 }
 
-struct SimpleEntry: TimelineEntry {
-    let date: Date
-    let emoji: String
+
+struct OctopusPricingWidgetEntryView: View {
+    var entry: OctopusWidgetEntry
+    
+    var body: some View {
+        WidgetSetupView(entry: entry)
+    }
 }
 
-struct OctopusPricingWidgetEntryView : View {
-    var entry: Provider.Entry
+//struct SimpleEntry: TimelineEntry {
+//    let date: Date
+//    let emoji: String
+//}
+//
+//struct OctopusPricingWidgetEntryView : View {
+//    var entry: DetailProvider.Entry
+//
+//    var body: some View {
+//        VStack {
+//            Text("Time:")
+//            Text(entry.date, style: .time)
+//
+//            Text("Emoji:")
+//            Text(entry.emoji)
+//        }
+//    }
+//}
 
-    var body: some View {
-        VStack {
-            Text("Time:")
-            Text(entry.date, style: .time)
-
-            Text("Emoji:")
-            Text(entry.emoji)
-        }
+struct InsertPostcodeIntent: WidgetConfigurationIntent {
+    static var title: LocalizedStringResource = "Postcode"
+    static var description = IntentDescription("Insert your postcode here.")
+    
+    
+    @Parameter(title: "Postcode")
+    var postcode: String?
+    
+    init(postcode: String?) {
+        self.postcode = postcode
+    }
+    
+    init () {
+        
     }
 }
 
@@ -61,7 +87,7 @@ struct OctopusPricingWidget: Widget {
     let kind: String = "OctopusPricingWidget"
 
     var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+        AppIntentConfiguration(kind: kind, intent: InsertPostcodeIntent.self, provider: DetailProvider()) { entry in
             if #available(iOS 17.0, *) {
                 OctopusPricingWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
@@ -79,6 +105,5 @@ struct OctopusPricingWidget: Widget {
 #Preview(as: .systemSmall) {
     OctopusPricingWidget()
 } timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+    OctopusWidgetEntry(date: .now, fromDate: Date(), toDate: Date(), isError: true, isPostcode: true, pricePerKWh: 0.10)
 }

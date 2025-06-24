@@ -70,6 +70,16 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		6520E1F12E0B56F700E11BA8 /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6520E2042E0B660C00E11BA8 /* Entry */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Entry;
+			sourceTree = "<group>";
+		};
 		652BBCD62E081462008BE5BC /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Models;
@@ -142,6 +152,8 @@
 		65B600A82E05D23C00C3E362 = {
 			isa = PBXGroup;
 			children = (
+				6520E2042E0B660C00E11BA8 /* Entry */,
+				6520E1F12E0B56F700E11BA8 /* Views */,
 				652BBCD62E081462008BE5BC /* Models */,
 				65B600F82E05D58300C3E362 /* Services */,
 				65B600B32E05D23C00C3E362 /* OctopusTracker */,
@@ -191,6 +203,8 @@
 				65B600F12E05D2F400C3E362 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				6520E1F12E0B56F700E11BA8 /* Views */,
+				6520E2042E0B660C00E11BA8 /* Entry */,
 				652BBCD62E081462008BE5BC /* Models */,
 				65B600B32E05D23C00C3E362 /* OctopusTracker */,
 				65B600F82E05D58300C3E362 /* Services */,
@@ -261,6 +275,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				6520E1F12E0B56F700E11BA8 /* Views */,
+				6520E2042E0B660C00E11BA8 /* Entry */,
 				65B600E62E05D2F200C3E362 /* OctopusPricingWidget */,
 			);
 			name = OctopusPricingWidgetExtension;
