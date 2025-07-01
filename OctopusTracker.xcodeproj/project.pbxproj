@@ -60,6 +60,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		65048BAF2E147B10003AAA97 /* Exceptions for "Services" folder in "OctopusPricingWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				RateService.swift,
+				TimelineService.swift,
+			);
+			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
+		};
+		65048BB22E147B7D003AAA97 /* Exceptions for "Models" folder in "OctopusPricingWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				GridSupplyPoint.swift,
+				UnitRates.swift,
+			);
+			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
+		};
 		65B600F32E05D2F400C3E362 /* Exceptions for "OctopusPricingWidget" folder in "OctopusPricingWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -82,6 +98,9 @@
 		};
 		652BBCD62E081462008BE5BC /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				65048BB22E147B7D003AAA97 /* Exceptions for "Models" folder in "OctopusPricingWidgetExtension" target */,
+			);
 			path = Models;
 			sourceTree = "<group>";
 		};
@@ -110,6 +129,9 @@
 		};
 		65B600F82E05D58300C3E362 /* Services */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				65048BAF2E147B10003AAA97 /* Exceptions for "Services" folder in "OctopusPricingWidgetExtension" target */,
+			);
 			path = Services;
 			sourceTree = "<group>";
 		};

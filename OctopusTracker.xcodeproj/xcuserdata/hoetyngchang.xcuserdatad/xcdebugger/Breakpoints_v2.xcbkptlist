@@ -3,4 +3,22 @@
    uuid = "C71F4026-CA49-4446-B482-77322C38AEEA"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4821DEF9-BF76-4948-BF00-C7F19CDAFD43"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Models/UnitRates.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "UnitRates"
+            landmarkType = "14">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

@@ -19,23 +19,8 @@ struct DetailProvider: AppIntentTimelineProvider {
     }
     
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<OctopusWidgetEntry> {
-        var entries: [OctopusWidgetEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = OctopusWidgetEntry(date: entryDate, fromDate: entryDate, toDate: entryDate, isError: true, isPostcode: true, pricePerKWh: 0.10)
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        return timeline
+        return await TimelineService.shared.generateTimeline(postcode: configuration.postcode)
     }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
 }
 
 
@@ -46,25 +31,6 @@ struct OctopusPricingWidgetEntryView: View {
         WidgetSetupView(entry: entry)
     }
 }
-
-//struct SimpleEntry: TimelineEntry {
-//    let date: Date
-//    let emoji: String
-//}
-//
-//struct OctopusPricingWidgetEntryView : View {
-//    var entry: DetailProvider.Entry
-//
-//    var body: some View {
-//        VStack {
-//            Text("Time:")
-//            Text(entry.date, style: .time)
-//
-//            Text("Emoji:")
-//            Text(entry.emoji)
-//        }
-//    }
-//}
 
 struct InsertPostcodeIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Postcode"

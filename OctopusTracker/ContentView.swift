@@ -10,14 +10,14 @@ import SwiftUI
 struct ContentView: View {
     
     func signIn() {
-        RateService.shared.fetchGridSupplyPoint(postcode: "PE1 1SQ") { result in
-            switch result {
-            case .success(let supplyPoint):
-                print(supplyPoint)
-            case .failure(_):
-                print("Failed to fetch rates")
-            }
-        }
+//        RateService.shared.fetchGridSupplyPoint(postcode: "PE1 1SQ") { result in
+//            switch result {
+//            case .success(let supplyPoint):
+//                print(supplyPoint)
+//            case .failure(_):
+//                print("Failed to fetch rates")
+//            }
+//        }
 //        RateService.shared.fetchAgileRates(tariffCode: TariffCodes.agileOct2024) { result in
 //            switch result {
 //            case .success(let response):

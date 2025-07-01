@@ -10,80 +10,39 @@ import Foundation
 class RateService {
     static let shared = RateService()
     
-    func fetchAgileRates(tariffCode: TariffCodes, completion: @escaping (Result<UnitRatesResponse, Error>) -> Void) {
+    func fetchAgileRates(tariffCode: TariffCodes) async throws -> UnitRatesResponse {
         guard let url = URL(string: "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-A/standard-unit-rates") else {
-            completion(.failure(URLError(.badURL)))
-            return
+            throw URLError(.badURL)
         }
-        
         var request = URLRequest(url: url)
-         request.httpMethod = "GET"
+        request.httpMethod = "GET"
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(URLError(.badServerResponse)))
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            
-            do {
-                let rates = try decoder.decode(UnitRatesResponse.self, from: data)
-                completion(.success(rates))
-            } catch {
-                completion(.failure(error))
-            }
-            
-        }.resume()
+        return try decoder.decode(UnitRatesResponse.self, from: data)
     }
     
-    func fetchGridSupplyPoint(postcode: String, completion: @escaping(Result<GridSupplyPoint, Error>) -> Void) {
-        let cleanPostcode = postcode.trimmingCharacters(in: .whitespacesAndNewlines)
+    func fetchGridSupplyPoint(postcode: String) async throws -> GridSupplyPoint {
+        let cleanPostcode = postcode
+            .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: " ", with: "")
             .lowercased()
         
-        guard let url = URL(string: "https://api.octopus.energy/v1/industry/grid-supply-points?postcode=\(cleanPostcode.lowercased())") else {
-            completion(.failure(URLError(.badURL)))
-            return
+        guard let url = URL(string: "https://api.octopus.energy/v1/industry/grid-supply-points?postcode=\(cleanPostcode)") else {
+            throw URLError(.badURL)
         }
         
         var request = URLRequest(url: url)
-         request.httpMethod = "GET"
+        request.httpMethod = "GET"
+        
+        let (data, _) = try await URLSession.shared.data(for: request)
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(URLError(.badServerResponse)))
-                return
-            }
-            
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            
-            do {
-                let supplyPoint = try decoder.decode(GridSupplyPoint.self, from: data)
-                completion(.success(supplyPoint))
-            } catch {
-                completion(.failure(error))
-            }
-            
-        }.resume()
+        return try decoder.decode(GridSupplyPoint.self, from: data)
     }
 }
-
