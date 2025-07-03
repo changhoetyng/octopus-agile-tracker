@@ -12,6 +12,6 @@ struct OctopusWidgetEntry: TimelineEntry {
     let fromDate: Date
     let toDate: Date
     let isError: Bool
-    let isPostcode: Bool
+    let isPostcodeMissing: Bool
     let pricePerKWh: Double
 }

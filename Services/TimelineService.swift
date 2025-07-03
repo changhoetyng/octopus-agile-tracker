@@ -10,12 +10,22 @@ class TimelineService {
     static let shared = TimelineService()
     
     public func generateTimeline(postcode: String?) async -> Timeline<OctopusWidgetEntry> {
-        if postcode == nil {
+        guard let postcode = postcode else {
+            return self.noPostcodeResponse()
+        }
+        
+        if postcode == "" {
             return self.noPostcodeResponse()
         }
         
         do {
-            var response = try await RateService.shared.fetchAgileRates(tariffCode: TariffCodes.agileOct2024)
+            let location = try await RateService.shared.fetchGridSupplyPoint(postcode: postcode)
+            
+            guard let supplyPointID = location.supplyPointID else {
+                return self.networkError()
+            }
+            
+            let response = try await RateService.shared.fetchAgileRates(tariffCode: TariffCodes.agileOct2024, supplyPointID: supplyPointID)
             return self.successResponse(rates: response.results)
         } catch {
             return self.networkError()
@@ -36,7 +46,7 @@ class TimelineService {
                     fromDate: rate.validFrom,
                     toDate: rate.validTo,
                     isError: false,
-                    isPostcode: false,
+                    isPostcodeMissing: false,
                     pricePerKWh: rate.valueIncVat
                 )
             )
@@ -61,7 +71,7 @@ class TimelineService {
                     fromDate: Date(),
                     toDate: Date(),
                     isError: true,
-                    isPostcode: false,
+                    isPostcodeMissing: false,
                     pricePerKWh: 0
                 )
             ], policy: .after(retry)
@@ -76,7 +86,7 @@ class TimelineService {
                     fromDate: Date(),
                     toDate: Date(),
                     isError: false,
-                    isPostcode: false,
+                    isPostcodeMissing: true,
                     pricePerKWh: 0
                 )
             ], policy: .never

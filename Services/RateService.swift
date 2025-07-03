@@ -10,8 +10,16 @@ import Foundation
 class RateService {
     static let shared = RateService()
     
-    func fetchAgileRates(tariffCode: TariffCodes) async throws -> UnitRatesResponse {
-        guard let url = URL(string: "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-A/standard-unit-rates") else {
+    func fetchAgileRates(tariffCode: TariffCodes, supplyPointID: SupplyPointID) async throws -> UnitRatesResponse {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime]
+        
+        let periodFrom = isoFormatter.string(from: Date())
+        
+        var components = URLComponents(string: "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-\(supplyPointID.rawValue)/standard-unit-rates")
+        components?.queryItems = [URLQueryItem(name: "period_from", value: periodFrom)]
+        
+        guard let url = components?.url else {
             throw URLError(.badURL)
         }
         var request = URLRequest(url: url)

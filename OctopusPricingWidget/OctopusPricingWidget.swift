@@ -11,11 +11,11 @@ import AppIntents
 
 struct DetailProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> OctopusWidgetEntry {
-        OctopusWidgetEntry(date: Date(), fromDate: Date(), toDate: Date(), isError: true, isPostcode: true, pricePerKWh: 0.10)
+        OctopusWidgetEntry(date: Date(), fromDate: Date(), toDate: Date(), isError: true, isPostcodeMissing: true, pricePerKWh: 0.10)
     }
 
     func snapshot(for configuration: InsertPostcodeIntent, in context: Context) async -> OctopusWidgetEntry {
-        OctopusWidgetEntry(date: Date(), fromDate: Date(), toDate: Date(), isError: true, isPostcode: true, pricePerKWh: 0.10)
+        OctopusWidgetEntry(date: Date(), fromDate: Date(), toDate: Date(), isError: true, isPostcodeMissing: true, pricePerKWh: 0.10)
     }
     
     func timeline(for configuration: Intent, in context: Context) async -> Timeline<OctopusWidgetEntry> {
@@ -71,5 +71,5 @@ struct OctopusPricingWidget: Widget {
 #Preview(as: .systemSmall) {
     OctopusPricingWidget()
 } timeline: {
-    OctopusWidgetEntry(date: .now, fromDate: Date(), toDate: Date(), isError: true, isPostcode: true, pricePerKWh: 0.10)
+    OctopusWidgetEntry(date: .now, fromDate: Date(), toDate: Date(), isError: true, isPostcodeMissing: true, pricePerKWh: 0.10)
 }

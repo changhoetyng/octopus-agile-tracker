@@ -16,15 +16,46 @@ struct WidgetSetupView: View {
     }
     
     var body: some View {
-        
-        let formattedFromTime: String = formatter.string(from: entry.fromDate)
-        let formattedToTime: String = formatter.string(from: entry.toDate)
+        if !entry.isPostcodeMissing && !entry.isError {
+            let formattedFromTime: String = formatter.string(from: entry.fromDate)
+            let formattedToTime: String = formatter.string(from: entry.toDate)
 
+            VStack {
+                Text("Time")
+                Text("\(formattedFromTime) - \(formattedToTime)")
+                Text("Price:")
+                Text("£\(String(format: "%.2f", entry.pricePerKWh))")
+            }
+        }
+        
+        else if entry.isPostcodeMissing {
+            NoPostcodeView(entry: entry)
+        }
+        
+        else {
+            NetworkErrorView(entry: entry)
+        }
+    
+    }
+}
+
+
+struct NetworkErrorView: View {
+    var entry: OctopusWidgetEntry
+    
+    var body: some View {
         VStack {
-            Text("Time")
-            Text("\(formattedToTime) - \(formattedFromTime)")
-            Text("Price:")
-            Text("£\(String(format: "%.2f", entry.pricePerKWh))")
+            Text("Something went wrong. Please try again later.")
+        }
+    }
+}
+
+struct NoPostcodeView: View {
+    var entry: OctopusWidgetEntry
+    
+    var body: some View {
+        VStack {
+            Text("No Postcode Found")
         }
     }
 }
