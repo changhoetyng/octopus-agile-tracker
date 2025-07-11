@@ -45,6 +45,11 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            Image("ArrowDownIcon")
+                .renderingMode(.template)
+              .resizable()
+              .foregroundColor(Color("BackgroundColor"))
+              .frame(width: 60, height: 32)
             Button("Sign In", action: signIn)
             if showDetails {
                 Text("Lol")

@@ -83,6 +83,13 @@
 			);
 			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
 		};
+		65F4766B2E21A730003BD9DD /* Exceptions for "Assets" folder in "OctopusPricingWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+			);
+			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -135,6 +142,14 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		65F476692E21A725003BD9DD /* Assets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				65F4766B2E21A730003BD9DD /* Exceptions for "Assets" folder in "OctopusPricingWidgetExtension" target */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +189,7 @@
 		65B600A82E05D23C00C3E362 = {
 			isa = PBXGroup;
 			children = (
+				65F476692E21A725003BD9DD /* Assets */,
 				6520E2042E0B660C00E11BA8 /* Entry */,
 				6520E1F12E0B56F700E11BA8 /* Views */,
 				652BBCD62E081462008BE5BC /* Models */,
@@ -230,6 +246,7 @@
 				652BBCD62E081462008BE5BC /* Models */,
 				65B600B32E05D23C00C3E362 /* OctopusTracker */,
 				65B600F82E05D58300C3E362 /* Services */,
+				65F476692E21A725003BD9DD /* Assets */,
 			);
 			name = OctopusTracker;
 			packageProductDependencies = (
