@@ -31,6 +31,24 @@ class TimelineService {
             return self.networkError()
         }
     }
+    
+    private func getAverageRate(rates: [UnitRates]) -> Dictionary<Date, Double> {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "Europe/London")!
+        // Group rates by their day
+        var dailyRates: [Date: [Double]] = [:]
+        for rate in rates {
+            let day = calendar.startOfDay(for: rate.validFrom)
+            dailyRates[day, default: []].append(rate.valueIncVat)
+        }
+        // Compute average for each day
+        var averages: [Date: Double] = [:]
+        for (day, values) in dailyRates {
+            let total = values.reduce(0.0) { $0 + $1 }
+            averages[day] = total / Double(values.count)
+        }
+        return averages
+    }
 
     /// Creates a timeline of widget entries from the provided rate data.
     ///
@@ -46,8 +64,13 @@ class TimelineService {
     ///   the next day's rate is not fetched till 4pm, it will reload at the earliest date. It should retry every hour after
     ///   4pm if the data for tomorrow is not loaded
     private func successResponse(rates: [UnitRates]) -> Timeline<OctopusWidgetEntry>{
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "Europe/London")!
+        let averagesDate = getAverageRate(rates: rates)
         var entries: [OctopusWidgetEntry] = []
         for rate in rates {
+            let day = calendar.startOfDay(for: rate.validFrom)
+            let average = averagesDate[day] ?? 0.0
             entries.append(
                 OctopusWidgetEntry(
                     date: rate.validFrom,
@@ -55,15 +78,14 @@ class TimelineService {
                     toDate: rate.validTo,
                     isError: false,
                     isPostcodeMissing: false,
-                    pricePerKWh: rate.valueIncVat
+                    pricePerKWh: rate.valueIncVat,
+                    averagePrice: average
                 )
             )
         }
 
         // Determine next retry time based on availability of tomorrow’s data and scheduled release at 4pm
         let now = Date()
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "Europe/London")!
 
         // Rates are normally release every 4pm
         let releaseToday = calendar.date(
@@ -122,7 +144,8 @@ class TimelineService {
                     toDate: Date(),
                     isError: true,
                     isPostcodeMissing: false,
-                    pricePerKWh: 0
+                    pricePerKWh: 0,
+                    averagePrice: 0
                 )
             ], policy: .after(retry)
         )
@@ -137,7 +160,8 @@ class TimelineService {
                     toDate: Date(),
                     isError: false,
                     isPostcodeMissing: true,
-                    pricePerKWh: 0
+                    pricePerKWh: 0,
+                    averagePrice: 0
                 )
             ], policy: .never
         )

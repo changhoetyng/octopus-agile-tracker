@@ -25,6 +25,8 @@ struct WidgetSetupView: View {
                 Text("\(formattedFromTime) - \(formattedToTime)")
                 Text("Price:")
                 Text("£\(String(format: "%.2f", entry.pricePerKWh))")
+                Text("Average Price:")
+                Text("£\(String(format: "%.2f", entry.averagePrice))")
             }
         }
         

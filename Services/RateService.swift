@@ -14,7 +14,9 @@ class RateService {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
         
-        let periodFrom = isoFormatter.string(from: Date())
+        let midnight = Calendar.current.startOfDay(for: Date())
+        
+        let periodFrom = isoFormatter.string(from: midnight)
         
         var components = URLComponents(string: "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-\(supplyPointID.rawValue)/standard-unit-rates")
         components?.queryItems = [URLQueryItem(name: "period_from", value: periodFrom)]
