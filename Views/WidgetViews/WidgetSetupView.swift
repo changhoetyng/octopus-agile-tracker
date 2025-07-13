@@ -52,12 +52,3 @@ struct NetworkErrorView: View {
     }
 }
 
-struct NoPostcodeView: View {
-    var entry: OctopusWidgetEntry
-    
-    var body: some View {
-        VStack {
-            Text("No Postcode Found")
-        }
-    }
-}

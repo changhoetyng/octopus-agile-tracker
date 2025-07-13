@@ -8,7 +8,7 @@
 import Foundation
 
 struct UnitRatesResponse: Decodable {
-    let count : Int
+    let count: Int
     let next: URL?
     let previous: URL?
     let results: [UnitRates]
@@ -20,7 +20,7 @@ struct UnitRates: Decodable {
     let validFrom: Date
     let validTo: Date
     let paymentMethod: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case valueExcVat = "value_exc_vat"
         case valueIncVat = "value_inc_vat"
