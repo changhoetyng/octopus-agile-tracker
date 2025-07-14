@@ -17,17 +17,18 @@ struct WidgetSetupView: View {
     
     var body: some View {
         if !entry.isPostcodeMissing && !entry.isError {
-            let formattedFromTime: String = formatter.string(from: entry.fromDate)
-            let formattedToTime: String = formatter.string(from: entry.toDate)
-
-            VStack {
-                Text("Time")
-                Text("\(formattedFromTime) - \(formattedToTime)")
-                Text("Price:")
-                Text("£\(String(format: "%.2f", entry.pricePerKWh))")
-                Text("Average Price:")
-                Text("£\(String(format: "%.2f", entry.averagePrice))")
-            }
+//            let formattedFromTime: String = formatter.string(from: entry.fromDate)
+//            let formattedToTime: String = formatter.string(from: entry.toDate)
+//
+//            VStack {
+//                Text("Time")
+//                Text("\(formattedFromTime) - \(formattedToTime)")
+//                Text("Price:")
+//                Text("£\(String(format: "%.2f", entry.pricePerKWh))")
+//                Text("Average Price:")
+//                Text("£\(String(format: "%.2f", entry.averagePrice))")
+//            }
+            AgileTrackerSmallWidget(entry: entry)
         }
         
         else if entry.isPostcodeMissing {
@@ -38,17 +39,6 @@ struct WidgetSetupView: View {
             NetworkErrorView(entry: entry)
         }
     
-    }
-}
-
-
-struct NetworkErrorView: View {
-    var entry: OctopusWidgetEntry
-    
-    var body: some View {
-        VStack {
-            Text("Something went wrong. Please try again later.")
-        }
     }
 }
 

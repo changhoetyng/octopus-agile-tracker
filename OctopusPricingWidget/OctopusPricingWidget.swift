@@ -89,8 +89,8 @@ struct OctopusPricingWidget: Widget {
                     .background()
             }
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("Agile Prices")
+        .description("Keep track of your energy costs.")
     }
 }
 
@@ -101,8 +101,8 @@ struct OctopusPricingWidget: Widget {
         date: .now,
         fromDate: Date(),
         toDate: Date(),
-        isError: true,
-        isPostcodeMissing: true,
+        isError: false,
+        isPostcodeMissing: false,
         pricePerKWh: 0.10,
         averagePrice: 0
     )
