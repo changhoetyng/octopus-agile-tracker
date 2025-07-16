@@ -103,7 +103,7 @@ struct OctopusPricingWidget: Widget {
         toDate: Date(),
         isError: false,
         isPostcodeMissing: false,
-        pricePerKWh: 0.10,
-        averagePrice: 0
+        pricePerKWh: -10,
+        averagePrice: 20
     )
 }
