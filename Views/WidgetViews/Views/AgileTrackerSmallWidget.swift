@@ -18,14 +18,14 @@ struct AgileTrackerSmallWidget: View {
     @ViewBuilder
     private var averagePercentageView: some View {
         if entry.averagePrice <= 0 {
-            
+
         }
-        
+
         let ratio = entry.pricePerKWh / entry.averagePrice
         let delta = abs(ratio - 1) * 100
         let isBelow = ratio < 1
         let iconName = isBelow ? "ArrowDownIcon" : "ArrowUpIcon"
-        let color    = isBelow ? Color.green       : Color.red
+        let color = isBelow ? Color.green : Color.red
 
         HStack(spacing: 6) {
             Image(iconName)
