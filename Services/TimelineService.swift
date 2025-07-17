@@ -39,12 +39,21 @@ class TimelineService {
         }
     }
 
-    private func getAverageRate(rates: [UnitRates]) -> [Date: Double] {
+    private func getAverageRate(rates: [UnitRates]) -> (
+        averages: [Date: Double], todayRates: [Double]
+    ) {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "Europe/London")!
         // Group rates by their day
         var dailyRates: [Date: [Double]] = [:]
-        for rate in rates {
+
+        // sort rates with date
+        let sortedRates =
+            rates.count > 1
+            ? rates.sorted(by: { $0.validFrom < $1.validFrom })
+            : rates
+
+        for rate in sortedRates {
             let day = calendar.startOfDay(for: rate.validFrom)
             dailyRates[day, default: []].append(rate.valueIncVat)
         }
@@ -54,7 +63,14 @@ class TimelineService {
             let total = values.reduce(0.0) { $0 + $1 }
             averages[day] = total / Double(values.count)
         }
-        return averages
+
+        let now = Date()
+
+        guard let todayRates = dailyRates[calendar.startOfDay(for: now)] else {
+            return (averages: averages, todayRates: [])
+        }
+
+        return (averages: averages, todayRates: todayRates)
     }
 
     /// Creates a timeline of widget entries from the provided rate data.
@@ -79,7 +95,7 @@ class TimelineService {
         var entries: [OctopusWidgetEntry] = []
         for rate in rates {
             let day = calendar.startOfDay(for: rate.validFrom)
-            let average = averagesDate[day] ?? 0.0
+            let average = averagesDate.averages[day] ?? 0.0
             entries.append(
                 OctopusWidgetEntry(
                     date: rate.validFrom,

@@ -9,36 +9,30 @@ import WidgetKit
 
 struct WidgetSetupView: View {
     var entry: OctopusWidgetEntry
+
+    @Environment(\.widgetFamily) var family
+
     private var formatter: DateFormatter {
         let f = DateFormatter()
         f.dateFormat = "HH:mm"
         return f
     }
-    
+
     var body: some View {
         if !entry.isPostcodeMissing && !entry.isError {
-//            let formattedFromTime: String = formatter.string(from: entry.fromDate)
-//            let formattedToTime: String = formatter.string(from: entry.toDate)
-//
-//            VStack {
-//                Text("Time")
-//                Text("\(formattedFromTime) - \(formattedToTime)")
-//                Text("Price:")
-//                Text("£\(String(format: "%.2f", entry.pricePerKWh))")
-//                Text("Average Price:")
-//                Text("£\(String(format: "%.2f", entry.averagePrice))")
-//            }
-            AgileTrackerSmallWidget(entry: entry)
-        }
-        
-        else if entry.isPostcodeMissing {
+            switch family {
+            case .systemSmall:
+                AgileTrackerSmallWidget(entry: entry)
+            case .systemMedium:
+                Text("Coming soon").foregroundStyle(Color.white)
+            default:
+                Text("View not supported").foregroundStyle(Color.white)
+            }
+        } else if entry.isPostcodeMissing {
             NoPostcodeView(entry: entry)
-        }
-        
-        else {
+        } else {
             NetworkErrorView(entry: entry)
         }
-    
+
     }
 }
-
