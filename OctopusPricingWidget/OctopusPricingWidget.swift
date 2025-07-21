@@ -18,7 +18,8 @@ struct DetailProvider: AppIntentTimelineProvider {
             isError: true,
             isPostcodeMissing: true,
             pricePerKWh: 0.10,
-            averagePrice: 0
+            averagePrice: 0,
+            dailyPrices: []
         )
     }
 
@@ -32,7 +33,8 @@ struct DetailProvider: AppIntentTimelineProvider {
             isError: true,
             isPostcodeMissing: true,
             pricePerKWh: 0.10,
-            averagePrice: 0
+            averagePrice: 0,
+            dailyPrices: []
         )
     }
 
@@ -94,9 +96,26 @@ struct OctopusPricingWidget: Widget {
     }
 }
 
-#Preview(as: .systemSmall) {
+#Preview(as: .systemMedium) {
     OctopusPricingWidget()
 } timeline: {
+    let calendar = Calendar.current
+    let now = Date()
+    let today = calendar.startOfDay(for: now) // Midnight (00:00) of today
+
+    let mockDailyPrices: [UnitRates] = (0..<48).map { index in
+        let start = calendar.date(byAdding: .minute, value: index * 30, to: today)!
+        let end = calendar.date(byAdding: .minute, value: 30, to: start)!
+        
+        return UnitRates(
+            valueExcVat: 20.0 + Double(index) * 0.5, // Increment by 0.5 per interval
+            valueIncVat: 24.0 + Double(index) * 0.5,  // 24 = 20 + 20% VAT
+            validFrom: start,
+            validTo: end,
+            paymentMethod: "MockMethod\(index)"
+        )
+    }
+    
     OctopusWidgetEntry(
         date: .now,
         fromDate: Date(),
@@ -104,6 +123,7 @@ struct OctopusPricingWidget: Widget {
         isError: false,
         isPostcodeMissing: false,
         pricePerKWh: -10,
-        averagePrice: 20
+        averagePrice: 20,
+        dailyPrices: mockDailyPrices
     )
 }

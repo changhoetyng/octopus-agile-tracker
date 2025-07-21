@@ -15,4 +15,5 @@ struct OctopusWidgetEntry: TimelineEntry {
     let isPostcodeMissing: Bool
     let pricePerKWh: Double
     let averagePrice: Double
+    let dailyPrices: [UnitRates]
 }

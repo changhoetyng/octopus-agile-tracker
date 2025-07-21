@@ -40,7 +40,7 @@ class TimelineService {
     }
 
     private func getAverageRate(rates: [UnitRates]) -> (
-        averages: [Date: Double], todayRates: [Double]
+        averages: [Date: Double], todayRatesList: [UnitRates]
     ) {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "Europe/London")!
@@ -52,6 +52,16 @@ class TimelineService {
             rates.count > 1
             ? rates.sorted(by: { $0.validFrom < $1.validFrom })
             : rates
+        
+        // only filter rates to today rates
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
+        // Filter only today's rates into the dictionary
+        let todayRatesList = sortedRates
+            .filter { rate in
+                rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
+            }
 
         for rate in sortedRates {
             let day = calendar.startOfDay(for: rate.validFrom)
@@ -64,13 +74,7 @@ class TimelineService {
             averages[day] = total / Double(values.count)
         }
 
-        let now = Date()
-
-        guard let todayRates = dailyRates[calendar.startOfDay(for: now)] else {
-            return (averages: averages, todayRates: [])
-        }
-
-        return (averages: averages, todayRates: todayRates)
+        return (averages: averages, todayRatesList: todayRatesList)
     }
 
     /// Creates a timeline of widget entries from the provided rate data.
@@ -104,7 +108,8 @@ class TimelineService {
                     isError: false,
                     isPostcodeMissing: false,
                     pricePerKWh: rate.valueIncVat,
-                    averagePrice: average
+                    averagePrice: average,
+                    dailyPrices: averagesDate.todayRatesList
                 )
             )
         }
@@ -182,7 +187,8 @@ class TimelineService {
                     isError: true,
                     isPostcodeMissing: false,
                     pricePerKWh: 0,
-                    averagePrice: 0
+                    averagePrice: 0,
+                    dailyPrices: []
                 )
             ],
             policy: .after(retry)
@@ -199,7 +205,8 @@ class TimelineService {
                     isError: false,
                     isPostcodeMissing: true,
                     pricePerKWh: 0,
-                    averagePrice: 0
+                    averagePrice: 0,
+                    dailyPrices: []
                 )
             ],
             policy: .never

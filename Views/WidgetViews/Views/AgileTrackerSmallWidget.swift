@@ -17,10 +17,6 @@ struct AgileTrackerSmallWidget: View {
 
     @ViewBuilder
     private var averagePercentageView: some View {
-        if entry.averagePrice <= 0 {
-
-        }
-
         let ratio = entry.pricePerKWh / entry.averagePrice
         let delta = abs(ratio - 1) * 100
         let isBelow = ratio < 1

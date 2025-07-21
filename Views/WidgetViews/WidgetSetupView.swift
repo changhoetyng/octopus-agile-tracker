@@ -24,7 +24,7 @@ struct WidgetSetupView: View {
             case .systemSmall:
                 AgileTrackerSmallWidget(entry: entry)
             case .systemMedium:
-                Text("Coming soon").foregroundStyle(Color.white)
+                AgileTrackerMediumWidget(entry: entry)
             default:
                 Text("View not supported").foregroundStyle(Color.white)
             }

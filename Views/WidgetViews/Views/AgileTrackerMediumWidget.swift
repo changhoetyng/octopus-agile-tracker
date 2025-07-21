@@ -1,3 +1,4 @@
+import Charts
 //
 //  AgileTrackerMediumWidget.swift
 //  OctopusTracker
@@ -7,7 +8,51 @@
 import SwiftUI
 
 struct AgileTrackerMediumWidget: View {
+    var entry: OctopusWidgetEntry
+
     var body: some View {
-        Text("Agile Tracker Medium Widget")
+        VStack {
+            HStack {
+                Text("\(String(format: "%.2f", entry.pricePerKWh))p/kwh")
+                    .foregroundStyle(Color("MainColor")).font(
+                        .system(size: 18, weight: .bold)
+                    )
+                Spacer()
+                VStack(alignment: .leading) {
+                    Text("Average price")
+                        .foregroundStyle(Color("SecondaryColor"))
+                        .font(
+                            .system(size: 12, weight: .semibold)
+                        )
+
+                    Text("\(String(format: "%.2f", entry.averagePrice))p/kwh")
+                        .foregroundColor(Color("MainColor"))
+                        .font(.system(size: 12, weight: .heavy))
+                }
+            }
+            Chart(entry.dailyPrices, id: \.validFrom) { item in
+                BarMark(
+                    x: .value(
+                        "Time",
+                        item.validFrom..<item.validFrom.advanced(by: 1800)
+                    ),
+                    y: .value("Price:", item.valueIncVat)
+                ).foregroundStyle(Color("MainColor"))
+            }.chartXAxis {
+                AxisMarks { _ in
+                    AxisGridLine().foregroundStyle(Color("MainColor"))
+                    AxisValueLabel()
+                        .foregroundStyle(.white)  // Set X-axis label color here
+                }
+            }
+            .chartYAxis {
+                AxisMarks { _ in
+                    AxisGridLine().foregroundStyle(Color("MainColor"))
+                    AxisValueLabel()
+                        .foregroundStyle(.white)
+                        .offset(x: 5)  // Set Y-axis label color here
+                }
+            }
+        }
     }
 }
