@@ -10,7 +10,7 @@ import SwiftUI
 import WidgetKit
 
 struct DetailProvider: AppIntentTimelineProvider {
-    func placeholder(in context: Context) -> OctopusWidgetEntry {
+    func placeholder(in _: Context) -> OctopusWidgetEntry {
         OctopusWidgetEntry(
             date: Date(),
             fromDate: Date(),
@@ -19,11 +19,11 @@ struct DetailProvider: AppIntentTimelineProvider {
             isPostcodeMissing: true,
             pricePerKWh: 0.10,
             averagePrice: 0,
-            dailyPrices: []
+            dailyPrices: [],
         )
     }
 
-    func snapshot(for configuration: InsertPostcodeIntent, in context: Context)
+    func snapshot(for _: InsertPostcodeIntent, in _: Context)
         async -> OctopusWidgetEntry
     {
         OctopusWidgetEntry(
@@ -34,15 +34,15 @@ struct DetailProvider: AppIntentTimelineProvider {
             isPostcodeMissing: true,
             pricePerKWh: 0.10,
             averagePrice: 0,
-            dailyPrices: []
+            dailyPrices: [],
         )
     }
 
-    func timeline(for configuration: Intent, in context: Context) async
+    func timeline(for configuration: Intent, in _: Context) async
         -> Timeline<OctopusWidgetEntry>
     {
-        return await TimelineService.shared.generateTimeline(
-            postcode: configuration.postcode
+        await TimelineService.shared.generateTimeline(
+            postcode: configuration.postcode,
         )
     }
 }
@@ -66,9 +66,7 @@ struct InsertPostcodeIntent: WidgetConfigurationIntent {
         self.postcode = postcode
     }
 
-    init() {
-
-    }
+    init() {}
 }
 
 struct OctopusPricingWidget: Widget {
@@ -78,7 +76,7 @@ struct OctopusPricingWidget: Widget {
         AppIntentConfiguration(
             kind: kind,
             intent: InsertPostcodeIntent.self,
-            provider: DetailProvider()
+            provider: DetailProvider(),
         ) { entry in
             if #available(iOS 17.0, *) {
                 OctopusPricingWidgetEntryView(entry: entry)
@@ -103,27 +101,27 @@ struct OctopusPricingWidget: Widget {
     let now = Date()
     let today = calendar.startOfDay(for: now) // Midnight (00:00) of today
 
-    let mockDailyPrices: [UnitRates] = (0..<48).map { index in
+    let mockDailyPrices: [UnitRates] = (0 ..< 48).map { index in
         let start = calendar.date(byAdding: .minute, value: index * 30, to: today)!
         let end = calendar.date(byAdding: .minute, value: 30, to: start)!
-        
+
         return UnitRates(
             valueExcVat: 20.0 + Double(index) * 0.5, // Increment by 0.5 per interval
-            valueIncVat: 24.0 + Double(index) * 0.5,  // 24 = 20 + 20% VAT
+            valueIncVat: 24.0 + Double(index) * 0.5, // 24 = 20 + 20% VAT
             validFrom: start,
             validTo: end,
-            paymentMethod: "MockMethod\(index)"
+            paymentMethod: "MockMethod\(index)",
         )
     }
-    
+
     OctopusWidgetEntry(
         date: .now,
         fromDate: Date(),
         toDate: Date(),
         isError: false,
         isPostcodeMissing: false,
-        pricePerKWh: -10,
+        pricePerKWh: 10,
         averagePrice: 20,
-        dailyPrices: mockDailyPrices
+        dailyPrices: mockDailyPrices,
     )
 }

@@ -22,10 +22,10 @@ class RateService {
 
         var components = URLComponents(
             string:
-                "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-\(supplyPointID.rawValue)/standard-unit-rates"
+            "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-\(supplyPointID.rawValue)/standard-unit-rates",
         )
         components?.queryItems = [
-            URLQueryItem(name: "period_from", value: periodFrom)
+            URLQueryItem(name: "period_from", value: periodFrom),
         ]
 
         guard let url = components?.url else {
@@ -42,18 +42,17 @@ class RateService {
         return try decoder.decode(UnitRatesResponse.self, from: data)
     }
 
-    func fetchGridSupplyPoint(postcode: String) async throws -> GridSupplyPoint
-    {
+    func fetchGridSupplyPoint(postcode: String) async throws -> GridSupplyPoint {
         let cleanPostcode =
             postcode
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .replacingOccurrences(of: " ", with: "")
-            .lowercased()
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .replacingOccurrences(of: " ", with: "")
+                .lowercased()
 
         guard
             let url = URL(
                 string:
-                    "https://api.octopus.energy/v1/industry/grid-supply-points?postcode=\(cleanPostcode)"
+                "https://api.octopus.energy/v1/industry/grid-supply-points?postcode=\(cleanPostcode)",
             )
         else {
             throw URLError(.badURL)

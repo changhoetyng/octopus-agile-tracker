@@ -19,7 +19,7 @@ extension SupplyPointID: Decodable {
         guard let supplyID = SupplyPointID(rawValue: cleanedValue) else {
             throw DecodingError.dataCorruptedError(
                 in: container,
-                debugDescription: "Invalid group ID: \(cleanedValue)"
+                debugDescription: "Invalid group ID: \(cleanedValue)",
             )
         }
 
@@ -40,20 +40,20 @@ struct GridSupplyPoint: Decodable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(
-            keyedBy: GridSupplyPointCodingKeys.self
+            keyedBy: GridSupplyPointCodingKeys.self,
         )
         let results = try container.decodeIfPresent(
             [GroupItem].self,
-            forKey: .results
+            forKey: .results,
         )
         if results == nil || results?.count != 1 {
-            self.supplyPointID = nil
+            supplyPointID = nil
             return
         }
-        self.supplyPointID = results?.first?.supplyPointID
+        supplyPointID = results?.first?.supplyPointID
     }
 
     private enum GridSupplyPointCodingKeys: String, CodingKey {
-        case results = "results"
+        case results
     }
 }

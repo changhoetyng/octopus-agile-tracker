@@ -19,7 +19,7 @@ struct WidgetSetupView: View {
     }
 
     var body: some View {
-        if !entry.isPostcodeMissing && !entry.isError {
+        if !entry.isPostcodeMissing, !entry.isError {
             switch family {
             case .systemSmall:
                 AgileTrackerSmallWidget(entry: entry)
@@ -33,6 +33,5 @@ struct WidgetSetupView: View {
         } else {
             NetworkErrorView(entry: entry)
         }
-
     }
 }

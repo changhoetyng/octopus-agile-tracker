@@ -13,12 +13,12 @@ struct OctopusPricingWidgetControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(
             kind: "changhoetyng.OctopusTracker.OctopusPricingWidget",
-            provider: Provider()
+            provider: Provider(),
         ) { value in
             ControlWidgetToggle(
                 "Start Timer",
                 isOn: value,
-                action: StartTimerIntent()
+                action: StartTimerIntent(),
             ) { isRunning in
                 Label(isRunning ? "On" : "Off", systemImage: "timer")
             }
@@ -49,6 +49,6 @@ struct StartTimerIntent: SetValueIntent {
 
     func perform() async throws -> some IntentResult {
         // Start / stop the timer based on `value`.
-        return .result()
+        .result()
     }
 }

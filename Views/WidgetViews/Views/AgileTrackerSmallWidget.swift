@@ -34,7 +34,7 @@ struct AgileTrackerSmallWidget: View {
                 .font(.system(size: 14, weight: .medium))
         }
         Text("vs day average").foregroundStyle(color).font(
-            .system(size: 14, weight: .medium)
+            .system(size: 14, weight: .medium),
         )
     }
 
@@ -44,17 +44,17 @@ struct AgileTrackerSmallWidget: View {
 
         VStack(alignment: .leading, spacing: 6) {
             Text("Cost").foregroundStyle(Color.white).font(
-                .system(size: 15)
+                .system(size: 15),
             )
             Text("\(String(format: "%.2f", entry.pricePerKWh))p/kwh")
                 .foregroundStyle(Color("MainColor")).font(
-                    .system(size: 20, weight: .heavy)
+                    .system(size: 20, weight: .heavy),
                 )
             VStack(alignment: .leading, spacing: 3) {
                 averagePercentageView
             }
             Text("\(formattedFromTime) - \(formattedToTime)").foregroundStyle(
-                Color("SecondaryColor")
+                Color("SecondaryColor"),
             ).font(.system(size: 12))
         }
     }

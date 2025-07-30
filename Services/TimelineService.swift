@@ -9,33 +9,33 @@ import WidgetKit
 class TimelineService {
     static let shared = TimelineService()
 
-    public func generateTimeline(postcode: String?) async -> Timeline<
+    func generateTimeline(postcode: String?) async -> Timeline<
         OctopusWidgetEntry
     > {
-        guard let postcode = postcode else {
-            return self.noPostcodeResponse()
+        guard let postcode else {
+            return noPostcodeResponse()
         }
 
         if postcode == "" {
-            return self.noPostcodeResponse()
+            return noPostcodeResponse()
         }
 
         do {
             let location = try await RateService.shared.fetchGridSupplyPoint(
-                postcode: postcode
+                postcode: postcode,
             )
 
             guard let supplyPointID = location.supplyPointID else {
-                return self.networkError()
+                return networkError()
             }
 
             let response = try await RateService.shared.fetchAgileRates(
                 tariffCode: TariffCodes.agileOct2024,
-                supplyPointID: supplyPointID
+                supplyPointID: supplyPointID,
             )
-            return self.successResponse(rates: response.results)
+            return successResponse(rates: response.results)
         } catch {
-            return self.networkError()
+            return networkError()
         }
     }
 
@@ -50,9 +50,9 @@ class TimelineService {
         // sort rates with date
         let sortedRates =
             rates.count > 1
-            ? rates.sorted(by: { $0.validFrom < $1.validFrom })
-            : rates
-        
+                ? rates.sorted(by: { $0.validFrom < $1.validFrom })
+                : rates
+
         // only filter rates to today rates
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
@@ -109,8 +109,8 @@ class TimelineService {
                     isPostcodeMissing: false,
                     pricePerKWh: rate.valueIncVat,
                     averagePrice: average,
-                    dailyPrices: averagesDate.todayRatesList
-                )
+                    dailyPrices: averagesDate.todayRatesList,
+                ),
             )
         }
 
@@ -122,15 +122,15 @@ class TimelineService {
             bySettingHour: 16,
             minute: 0,
             second: 0,
-            of: now
+            of: now,
         )!
 
         // Latest end time from fetched rates
-        let lastTo = rates.map { $0.validTo }.max()!
+        let lastTo = rates.map(\.validTo).max()!
 
         // Start of tomorrow for comparison
         let tomorrowStart = calendar.startOfDay(
-            for: calendar.date(byAdding: .day, value: 1, to: now)!
+            for: calendar.date(byAdding: .day, value: 1, to: now)!,
         )
 
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
@@ -138,34 +138,35 @@ class TimelineService {
             bySettingHour: 16,
             minute: 0,
             second: 0,
-            of: tomorrow
+            of: tomorrow,
         )!
 
         // Compute next retry date
         let nextRetry: Date
-        // if the current time is smaller than 4pm today
-        if now > releaseToday {
+            // if the current time is smaller than 4pm today
+            = if now > releaseToday
+        {
             // if the latest time is still the current date, retry
             if lastTo >= tomorrowStart {
                 // Tomorrow’s data is available: retry at the earlier of its arrival or scheduled release
-                nextRetry = min(lastTo, releaseTomorrow)
+                min(lastTo, releaseTomorrow)
             } else {
                 // Retry hourly until release
-                nextRetry = calendar.date(
+                calendar.date(
                     byAdding: .hour,
                     value: 1,
-                    to: now
+                    to: now,
                 )!
             }
         } else {
             // After scheduled release, schedule for next day at 4pm
-            nextRetry = min(
+            min(
                 lastTo,
                 calendar.date(
                     byAdding: .day,
                     value: 1,
-                    to: releaseToday
-                )!
+                    to: releaseToday,
+                )!,
             )
         }
 
@@ -176,7 +177,7 @@ class TimelineService {
         let retry = Calendar.current.date(
             byAdding: .minute,
             value: 15,
-            to: Date()
+            to: Date(),
         )!
         return Timeline(
             entries: [
@@ -188,15 +189,15 @@ class TimelineService {
                     isPostcodeMissing: false,
                     pricePerKWh: 0,
                     averagePrice: 0,
-                    dailyPrices: []
-                )
+                    dailyPrices: [],
+                ),
             ],
-            policy: .after(retry)
+            policy: .after(retry),
         )
     }
 
     private func noPostcodeResponse() -> Timeline<OctopusWidgetEntry> {
-        return Timeline(
+        Timeline(
             entries: [
                 OctopusWidgetEntry(
                     date: Date(),
@@ -206,10 +207,10 @@ class TimelineService {
                     isPostcodeMissing: true,
                     pricePerKWh: 0,
                     averagePrice: 0,
-                    dailyPrices: []
-                )
+                    dailyPrices: [],
+                ),
             ],
-            policy: .never
+            policy: .never,
         )
     }
 }

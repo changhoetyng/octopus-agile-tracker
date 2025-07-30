@@ -1,4 +1,5 @@
 import Charts
+
 //
 //  AgileTrackerMediumWidget.swift
 //  OctopusTracker
@@ -15,14 +16,14 @@ struct AgileTrackerMediumWidget: View {
             HStack {
                 Text("\(String(format: "%.2f", entry.pricePerKWh))p/kwh")
                     .foregroundStyle(Color("MainColor")).font(
-                        .system(size: 18, weight: .bold)
+                        .system(size: 18, weight: .bold),
                     )
                 Spacer()
                 VStack(alignment: .leading) {
                     Text("Average price")
                         .foregroundStyle(Color("SecondaryColor"))
                         .font(
-                            .system(size: 12, weight: .semibold)
+                            .system(size: 12, weight: .semibold),
                         )
 
                     Text("\(String(format: "%.2f", entry.averagePrice))p/kwh")
@@ -30,19 +31,38 @@ struct AgileTrackerMediumWidget: View {
                         .font(.system(size: 12, weight: .heavy))
                 }
             }
-            Chart(entry.dailyPrices, id: \.validFrom) { item in
-                BarMark(
-                    x: .value(
-                        "Time",
-                        item.validFrom..<item.validFrom.advanced(by: 1800)
-                    ),
-                    y: .value("Price:", item.valueIncVat)
-                ).foregroundStyle(Color("MainColor"))
-            }.chartXAxis {
-                AxisMarks { _ in
+            Chart {
+                ForEach(entry.dailyPrices, id: \.validFrom) { item in
+                    BarMark(
+                        x: .value(
+                            "Time",
+                            item.validFrom ..< item.validFrom.advanced(by: 1800),
+                        ),
+                        y: .value("Price:", item.valueIncVat),
+                    )
+                    .foregroundStyle(Color("MainColor"))
+                }
+                RuleMark(
+                    x: .value("Break Even Threshold", entry.fromDate),
+                )
+                .foregroundStyle(Color.blue)
+                .annotation(position: .overlay) {
+                    Circle()
+                        .fill(Color.blue)
+                        .frame(width: 8, height: 8)
+                        .offset(y: -32) // Adjust offset if needed
+                }
+                //                .annotation(position: .top) {
+                //                    Text("Now").font(.system(size: 4)).foregroundStyle(Color.blue)
+                //                }
+            }
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .hour, count: 3)) { _ in
                     AxisGridLine().foregroundStyle(Color("MainColor"))
-                    AxisValueLabel()
-                        .foregroundStyle(.white)  // Set X-axis label color here
+                    AxisValueLabel(
+                        format: .dateTime.hour(.defaultDigits(amPM: .omitted)),
+                    )
+                    .foregroundStyle(.white)
                 }
             }
             .chartYAxis {
@@ -50,7 +70,7 @@ struct AgileTrackerMediumWidget: View {
                     AxisGridLine().foregroundStyle(Color("MainColor"))
                     AxisValueLabel()
                         .foregroundStyle(.white)
-                        .offset(x: 5)  // Set Y-axis label color here
+                        .offset(x: 5)
                 }
             }
         }
