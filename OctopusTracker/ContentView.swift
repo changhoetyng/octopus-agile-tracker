@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading) {
-            GreetingView()
+            GreetingView().padding(.bottom, 7)
             PostcodeInputBar()
         }
         .frame(

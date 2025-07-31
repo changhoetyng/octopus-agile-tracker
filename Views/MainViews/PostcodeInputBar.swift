@@ -11,10 +11,18 @@ struct PostcodeInputBar: View {
     @State var tempPostcode: String = ""
 
     func onSubmitPostcode() {
-        if tempPostcode.isEmpty {
+        if tempPostcode.isEmpty || tempPostcode.count > 8 {
             return
         }
+
+        // Capitalise all letters
+        tempPostcode = tempPostcode.uppercased()
+
+        // Remove all spaces
+        tempPostcode = tempPostcode.replacingOccurrences(of: " ", with: "")
+
         postcode = tempPostcode
+
         MainState.shared.setPostcode(postcode: tempPostcode)
         tempPostcode = ""
     }
@@ -42,14 +50,21 @@ struct PostcodeInputBar: View {
             .cornerRadius(12)
             .frame(width: 152)
         } else {
-            HStack {
-                Text(postcode)
-                    .foregroundColor(.primary)
-                    .font(.system(size: 12, weight: .bold))
+            VStack(alignment: .leading) {
+                Text("Showing results for")
+                    .foregroundColor(.white)
+                    .font(.system(size: 16, weight: .bold))
+                    .padding(.bottom, 2)
 
-                Button(action: deletePostcode) {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray)
+                HStack {
+                    Text(postcode)
+                        .foregroundColor(.white)
+                        .font(.system(size: 13, weight: .bold))
+
+                    Button(action: deletePostcode) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
                 }
             }
         }
