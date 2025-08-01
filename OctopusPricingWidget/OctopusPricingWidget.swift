@@ -94,7 +94,7 @@ struct OctopusPricingWidget: Widget {
     }
 }
 
-#Preview(as: .systemMedium) {
+#Preview(as: .systemSmall) {
     OctopusPricingWidget()
 } timeline: {
     let calendar = Calendar.current
