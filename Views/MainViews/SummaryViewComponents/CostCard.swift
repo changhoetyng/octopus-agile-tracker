@@ -2,7 +2,7 @@ import SwiftUI
 
 struct CostCard: View {
     var body: some View {
-        CardView(bottomText: "Total") {
+        CardView(bottomText: "Current Cost") {
             VStack(alignment: .leading, spacing: 0) {
                 Text("\(String(format: "%.2f", 50.45))p/kwh")
                     .foregroundStyle(Color("MainColor")).font(
@@ -17,9 +17,9 @@ struct CostCard: View {
                     height: 20,
                     fontSize: 18,
                 )
-            }.padding(.top, 10)
-                .padding(.bottom, 10)
-                .padding(.leading, 10)
+            }
+            .padding(.top, 6)
+            .padding(.bottom, 6)
         }
     }
 }
