@@ -36,7 +36,6 @@ struct GreenEnergyMixCard: View {
                 VStack(spacing: 8) {
                     self.renewableEnergyMix(icon: "WindIcon", percentage: 100)
                     self.renewableEnergyMix(icon: "SunIcon", percentage: 0)
-                    self.renewableEnergyMix(icon: "DamIcon", percentage: 0)
                 }
                 
                 VStack(spacing: 3) {

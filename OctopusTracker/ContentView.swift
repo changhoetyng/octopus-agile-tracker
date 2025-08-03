@@ -12,7 +12,8 @@ struct ContentView: View {
         VStack(alignment: .leading) {
             GreetingView().padding(.bottom, 7)
             PostcodeInputBar().padding(.bottom, 18)
-            SummaryView()
+            SummaryView().padding(.bottom, 18)
+            AgileRates()
         }
         .frame(
             maxWidth: .infinity,
