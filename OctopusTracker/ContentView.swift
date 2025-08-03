@@ -11,9 +11,8 @@ struct ContentView: View {
     var body: some View {
         VStack(alignment: .leading) {
             GreetingView().padding(.bottom, 7)
-            PostcodeInputBar().padding(.bottom, 15)
+            PostcodeInputBar().padding(.bottom, 18)
             SummaryView()
-            CostCard()
         }
         .frame(
             maxWidth: .infinity,
