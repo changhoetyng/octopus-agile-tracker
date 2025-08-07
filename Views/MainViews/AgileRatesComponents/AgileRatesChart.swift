@@ -66,7 +66,7 @@ struct AgileRatesChart: View {
                             Text("Time: \(formatter.string(from: selectedItem.validFrom))").foregroundStyle(.white)
                             Text("Price: \(String(format: "%.2f", selectedItem.valueIncVat))p/kWh").foregroundStyle(.white)
                         }
-                        .frame(width: 300, height: 100)
+                        .frame(width: 200, height: 80)
                         .background(
                             RoundedRectangle(cornerRadius: 20)
                                 .fill(Color("DarkBackgroundColor"))
