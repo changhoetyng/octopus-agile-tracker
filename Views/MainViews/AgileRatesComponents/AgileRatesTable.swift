@@ -31,11 +31,11 @@ struct AgileRatesTable : View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 12)
+        .padding(.bottom, 8) // Reduced from 12 to 8
         
         // Table content
         ScrollView {
-            VStack(spacing: 8) {
+            VStack(spacing: 7) {
                 TableRowCard(time: "00:00", rate: "25.91p", percentage: "+25%")
                 TableRowCard(time: "01:00", rate: "22.45p", percentage: "-8%")
                 TableRowCard(time: "02:00", rate: "18.32p", percentage: "-23%")
@@ -47,6 +47,6 @@ struct AgileRatesTable : View {
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
             }
-        }
+        }.frame(height: 250) // Reduced from 350 to 250
     }
 }

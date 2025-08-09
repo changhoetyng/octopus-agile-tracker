@@ -6,22 +6,23 @@
 //
 
 import SwiftUI
+import Charts
 
 struct ContentView: View {
     var body: some View {
-        VStack(alignment: .leading) {
-            GreetingView().padding(.bottom, 7)
-            PostcodeInputBar().padding(.bottom, 18)
-            SummaryView().padding(.bottom, 18)
-            AgileRates()
-        }
-        .frame(
-            maxWidth: .infinity,
-            maxHeight: .infinity,
-            alignment: .topLeading,
-        )
-        .padding()
-        .background(Color("BackgroundColor"))
+        VStack {
+            Spacer().frame(height: 8)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    GreetingView().padding(.bottom, 7)
+                    PostcodeInputBar().padding(.bottom, 18)
+                    SummaryView().padding(.bottom, 18)
+                    AgileRates()
+                }
+            }
+            .padding(.horizontal, 20)
+            .background(Color("BackgroundColor"))
+        }.background(Color("BackgroundColor"))
     }
 }
 

@@ -48,7 +48,7 @@ struct TableRowCard: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
         .background(
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: 15)
                 .fill(Color("SecondaryColor").opacity(0.3))
         )
     }

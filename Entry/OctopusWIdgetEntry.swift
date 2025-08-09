@@ -17,3 +17,6 @@ struct OctopusWidgetEntry: TimelineEntry {
     let averagePrice: Double
     let dailyPrices: [UnitRates]
 }
+
+typealias OctopusWidgetData = OctopusWidgetEntry
+

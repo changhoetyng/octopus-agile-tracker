@@ -6,9 +6,32 @@
 //
 
 import SwiftUI
+import Darwin
 
 struct AgileRates: View {
     @State private var selectedTab = 0
+    private let hapticFeedback = UIImpactFeedbackGenerator(style: .light)
+    
+    var mockDailyPrices: [UnitRates] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        
+        // Build the array of rates
+        let prices = (0 ..< 48).map { index in
+            let start = calendar.date(byAdding: .minute, value: index * 30, to: today)!
+            let end = calendar.date(byAdding: .minute, value: 30, to: start)!
+    
+            return UnitRates(
+                valueExcVat: 20.0 + Double(index) * 0.5,
+                valueIncVat: 24.0 + Double(index) * 0.5,
+                validFrom: start,
+                validTo: end,
+                paymentMethod: "MockMethod\(index)"
+            )
+        }
+        
+        return prices
+    }
 
     var body: some View {
         Text("Agile Costs").foregroundColor(.white)
@@ -16,7 +39,7 @@ struct AgileRates: View {
         VStack(alignment: .leading, spacing: 16) {
             // Day selector tabs
             HStack(spacing: 30) {
-                Button(action: { selectedTab = 0 }) {
+                Button(action: { selectedTab = 0; }) {
                     Text("Today")
                         .foregroundColor(selectedTab == 0 ? .white : .gray)
                         .font(.system(size: 20, weight: .heavy))
@@ -31,8 +54,9 @@ struct AgileRates: View {
                 Spacer()
             }
         }
-        .padding(.bottom, 12)
-        AgileRatesChart()
+        .padding(.bottom, 14)
+        AgileRatesChart(dailyPrices: mockDailyPrices)
+        Spacer().frame(height: 20)
         AgileRatesTable()
     }
 }
