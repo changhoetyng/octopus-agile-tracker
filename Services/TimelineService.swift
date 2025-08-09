@@ -25,15 +25,13 @@ class TimelineService {
                 postcode: postcode,
             )
 
-            guard let supplyPointID = location.supplyPointID else {
-                return networkError()
-            }
-
             let response = try await RateService.shared.fetchAgileRates(
                 tariffCode: TariffCodes.agileOct2024,
-                supplyPointID: supplyPointID,
+                supplyPointID: location,
             )
             return successResponse(rates: response.results)
+        } catch RateServiceError.incorrectPostcode {
+            return postcodeError()
         } catch {
             return networkError()
         }
@@ -105,8 +103,6 @@ class TimelineService {
                     date: rate.validFrom,
                     fromDate: rate.validFrom,
                     toDate: rate.validTo,
-                    isError: false,
-                    isPostcodeMissing: false,
                     pricePerKWh: rate.valueIncVat,
                     averagePrice: average,
                     dailyPrices: averagesDate.todayRatesList,
@@ -186,13 +182,29 @@ class TimelineService {
                     fromDate: Date(),
                     toDate: Date(),
                     isError: true,
-                    isPostcodeMissing: false,
                     pricePerKWh: 0,
                     averagePrice: 0,
                     dailyPrices: [],
                 ),
             ],
             policy: .after(retry),
+        )
+    }
+
+    private func postcodeError() -> Timeline<OctopusWidgetEntry> {
+        return Timeline(
+            entries: [
+                OctopusWidgetEntry(
+                    date: Date(),
+                    fromDate: Date(),
+                    toDate: Date(),
+                    isPostcodeWrong: true,
+                    pricePerKWh: 0,
+                    averagePrice: 0,
+                    dailyPrices: [],
+                ),
+            ],
+            policy: .never,
         )
     }
 
@@ -203,7 +215,6 @@ class TimelineService {
                     date: Date(),
                     fromDate: Date(),
                     toDate: Date(),
-                    isError: false,
                     isPostcodeMissing: true,
                     pricePerKWh: 0,
                     averagePrice: 0,

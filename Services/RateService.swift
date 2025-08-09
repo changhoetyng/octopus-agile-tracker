@@ -7,10 +7,14 @@
 
 import Foundation
 
+enum RateServiceError: Error {
+    case incorrectPostcode
+}
+
 class RateService {
     static let shared = RateService()
 
-    func fetchAgileRates(tariffCode: TariffCodes, supplyPointID: SupplyPointID)
+    func fetchAgileRates(tariffCode: TariffCodes, supplyPointID: String)
         async throws -> UnitRatesResponse
     {
         let isoFormatter = ISO8601DateFormatter()
@@ -22,7 +26,7 @@ class RateService {
 
         var components = URLComponents(
             string:
-            "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-\(supplyPointID.rawValue)/standard-unit-rates",
+            "https://api.octopus.energy/v1/products/\(tariffCode.rawValue)/electricity-tariffs/E-1R-\(tariffCode.rawValue)-\(supplyPointID)/standard-unit-rates",
         )
         components?.queryItems = [
             URLQueryItem(name: "period_from", value: periodFrom),
@@ -42,7 +46,7 @@ class RateService {
         return try decoder.decode(UnitRatesResponse.self, from: data)
     }
 
-    func fetchGridSupplyPoint(postcode: String) async throws -> GridSupplyPoint {
+    func fetchGridSupplyPoint(postcode: String) async throws -> String {
         let cleanPostcode =
             postcode
                 .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -65,7 +69,17 @@ class RateService {
 
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
+        let response = try decoder.decode(PaginatedResponse<GridSupplyPointResponse>.self, from: data)
 
-        return try decoder.decode(GridSupplyPoint.self, from: data)
+        // If result length is not 1 and more than 1, throw error
+        if response.results.count != 1 {
+            throw RateServiceError.incorrectPostcode
+        }
+        
+        guard let point = response.results.first?.supplyPointID else {
+            throw RateServiceError.incorrectPostcode
+        }
+
+        return point
     }
 }

@@ -118,8 +118,6 @@ struct OctopusPricingWidget: Widget {
         date: .now,
         fromDate: Date(),
         toDate: Date(),
-        isError: false,
-        isPostcodeMissing: false,
         pricePerKWh: 10,
         averagePrice: 20,
         dailyPrices: mockDailyPrices,

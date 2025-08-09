@@ -19,7 +19,7 @@ struct WidgetSetupView: View {
     }
 
     var body: some View {
-        if !entry.isPostcodeMissing, !entry.isError {
+        if !entry.isPostcodeMissing, !entry.isError, !entry.isPostcodeWrong {
             switch family {
             case .systemSmall:
                 AgileTrackerSmallWidget(entry: entry)
@@ -28,6 +28,8 @@ struct WidgetSetupView: View {
             default:
                 Text("View not supported").foregroundStyle(Color.white)
             }
+        } else if entry.isPostcodeWrong {
+            WrongPostcodeView(entry: entry)
         } else if entry.isPostcodeMissing {
             NoPostcodeView(entry: entry)
         } else {
