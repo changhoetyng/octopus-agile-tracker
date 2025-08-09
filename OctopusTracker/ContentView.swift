@@ -18,6 +18,7 @@ struct ContentView: View {
                     PostcodeInputBar().padding(.bottom, 18)
                     SummaryView().padding(.bottom, 18)
                     AgileRates()
+                    FooterView()
                 }
             }
             .padding(.horizontal, 20)
