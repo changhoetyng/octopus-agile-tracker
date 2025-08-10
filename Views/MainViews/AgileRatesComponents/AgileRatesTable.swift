@@ -7,23 +7,25 @@
 
 import SwiftUI
 
-struct AgileRatesTable : View {
-    var body : some View {
+struct AgileRatesTable: View {
+    @EnvironmentObject var appState: AppState
+
+    var body: some View {
         // Table header
         HStack(spacing: 16) {
             Text("Time")
                 .foregroundColor(.white)
                 .font(.system(size: 15, weight: .semibold))
                 .frame(width: 60, alignment: .leading)
-            
+
             Spacer()
-            
+
             HStack(spacing: 12) {
                 Text("Rate")
                     .foregroundColor(.white)
                     .font(.system(size: 15, weight: .semibold))
                     .frame(width: 80, alignment: .trailing)
-                
+
                 Text("vs avg")
                     .foregroundColor(.gray)
                     .font(.system(size: 13, weight: .medium))
@@ -31,8 +33,8 @@ struct AgileRatesTable : View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 8) // Reduced from 12 to 8
-        
+        .padding(.bottom, 8)  // Reduced from 12 to 8
+
         // Table content
         ScrollView {
             VStack(spacing: 7) {
@@ -47,6 +49,7 @@ struct AgileRatesTable : View {
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
             }
-        }.frame(height: 250) // Reduced from 350 to 250
+            .skeletonLoadingView(isLoading: appState.isPriceDataLoading)
+        }.frame(height: 270)  // Reduced from 350 to 250
     }
 }

@@ -192,7 +192,7 @@ class TimelineService {
     }
 
     private func postcodeError() -> Timeline<OctopusWidgetEntry> {
-        return Timeline(
+        Timeline(
             entries: [
                 OctopusWidgetEntry(
                     date: Date(),

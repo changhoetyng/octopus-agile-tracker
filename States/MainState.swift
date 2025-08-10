@@ -18,3 +18,11 @@ class MainState {
         UserDefaults.standard.set(postcode, forKey: "postcode")
     }
 }
+
+class AppState: ObservableObject {
+    @Published var isPriceDataLoading = false
+
+    func setIsPriceDataLoading(isLoading: Bool) {
+        isPriceDataLoading = isLoading
+    }
+}

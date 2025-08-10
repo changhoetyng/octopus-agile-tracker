@@ -5,10 +5,13 @@
 //  Created by Hoe Tyng Chang on 20/06/2025.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct ContentView: View {
+    // Fetch data from timeline service
+    // let timeline = TimelineService.shared.getTimeline(postcode: MainState.shared.getPostcode())
+
     var body: some View {
         VStack {
             Spacer().frame(height: 8)
@@ -29,4 +32,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(AppState())
 }

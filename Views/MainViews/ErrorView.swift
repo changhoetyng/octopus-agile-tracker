@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ErrorView: View {
-    var body : some View {
+    var body: some View {
         Text("Something went wrong, please try again later.")
     }
 }

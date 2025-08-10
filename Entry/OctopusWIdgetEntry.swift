@@ -27,7 +27,7 @@ struct OctopusWidgetEntry: TimelineEntry {
         isPostcodeWrong: Bool = false,
         pricePerKWh: Double,
         averagePrice: Double,
-        dailyPrices: [UnitRates]
+        dailyPrices: [UnitRates],
     ) {
         self.date = date
         self.fromDate = fromDate
@@ -42,4 +42,3 @@ struct OctopusWidgetEntry: TimelineEntry {
 }
 
 typealias OctopusWidgetData = OctopusWidgetEntry
-

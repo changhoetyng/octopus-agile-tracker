@@ -75,7 +75,7 @@ class RateService {
         if response.results.count != 1 {
             throw RateServiceError.incorrectPostcode
         }
-        
+
         guard let point = response.results.first?.supplyPointID else {
             throw RateServiceError.incorrectPostcode
         }

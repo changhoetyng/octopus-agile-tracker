@@ -1,15 +1,16 @@
 import SwiftUI
 
 struct GreenEnergyMixCard: View {
-
+    @EnvironmentObject var appState: AppState
+    
     private func textColor(
         percentageThreshold: Double,
-        percentage: Double
+        percentage: Double,
     ) -> Color {
         if percentage < percentageThreshold {
-            return Color.orange
+            Color.orange
         } else {
-            return Color.green
+            Color.green
         }
     }
 
@@ -24,7 +25,7 @@ struct GreenEnergyMixCard: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundColor(
-                    textColor(percentageThreshold: 50, percentage: percentage)
+                    textColor(percentageThreshold: 50, percentage: percentage),
                 )
             Spacer()
         }
@@ -32,21 +33,21 @@ struct GreenEnergyMixCard: View {
 
     var body: some View {
         CardView(bottomText: "Green Energy Mix") {
-            HStack( alignment: .top, spacing: 32) {
+            HStack(alignment: .top, spacing: 32) {
                 VStack(spacing: 8) {
-                    self.renewableEnergyMix(icon: "WindIcon", percentage: 100)
-                    self.renewableEnergyMix(icon: "SunIcon", percentage: 0)
+                    renewableEnergyMix(icon: "WindIcon", percentage: 100)
+                    renewableEnergyMix(icon: "SunIcon", percentage: 0)
                 }
-                
+
                 VStack(spacing: 3) {
                     Text("50%")
                         .font(.system(size: 26, weight: .bold))
                         .foregroundColor(
-                            textColor(percentageThreshold: 10, percentage: 50)
+                            textColor(percentageThreshold: 10, percentage: 50),
                         )
                     Text("Total").font(.system(size: 17, weight: .bold)).opacity(0.5)
                 }
-            }
+            }.skeletonLoadingView(isLoading: appState.isPriceDataLoading)
         }
     }
 }

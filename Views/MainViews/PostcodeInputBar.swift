@@ -9,6 +9,7 @@ import SwiftUI
 struct PostcodeInputBar: View {
     @State var postcode: String = MainState.shared.getPostcode()
     @State var tempPostcode: String = ""
+    @EnvironmentObject var appState: AppState
 
     func onSubmitPostcode() {
         if tempPostcode.isEmpty || tempPostcode.count > 8 {
@@ -51,11 +52,6 @@ struct PostcodeInputBar: View {
             .frame(width: 152)
         } else {
             VStack(alignment: .leading) {
-                Text("Showing results for")
-                    .foregroundColor(.white)
-                    .font(.system(size: 16, weight: .bold))
-                    .padding(.bottom, 2)
-
                 HStack {
                     Text(postcode)
                         .foregroundColor(.white)

@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct CostCard: View {
+    @EnvironmentObject var appState: AppState
+
     var body: some View {
         CardView(bottomText: "Current Cost") {
             VStack(alignment: .leading, spacing: 0) {
@@ -20,6 +22,7 @@ struct CostCard: View {
             }
             .padding(.top, 6)
             .padding(.bottom, 6)
+            .skeletonLoadingView(isLoading: appState.isPriceDataLoading)
         }
     }
 }
