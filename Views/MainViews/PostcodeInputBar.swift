@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct PostcodeInputBar: View {
-    @State var postcode: String = MainState.shared.getPostcode()
     @State var tempPostcode: String = ""
     @EnvironmentObject var appState: AppState
 
@@ -22,19 +21,16 @@ struct PostcodeInputBar: View {
         // Remove all spaces
         tempPostcode = tempPostcode.replacingOccurrences(of: " ", with: "")
 
-        postcode = tempPostcode
-
-        MainState.shared.setPostcode(postcode: tempPostcode)
+        appState.setPostcode(postcode: tempPostcode)
         tempPostcode = ""
     }
 
     func deletePostcode() {
-        postcode = ""
-        MainState.shared.setPostcode(postcode: "")
+        appState.setPostcode(postcode: "")
     }
 
     var body: some View {
-        if postcode.isEmpty {
+        if appState.userPostcode.isEmpty {
             HStack {
                 TextField("Insert Postcode", text: $tempPostcode)
                     .foregroundColor(.primary)
@@ -53,7 +49,7 @@ struct PostcodeInputBar: View {
         } else {
             VStack(alignment: .leading) {
                 HStack {
-                    Text(postcode)
+                    Text(appState.userPostcode)
                         .foregroundColor(.white)
                         .font(.system(size: 13, weight: .bold))
 

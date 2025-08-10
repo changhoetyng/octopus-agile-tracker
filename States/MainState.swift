@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-class MainState {
-    static let shared = MainState()
-
-    func getPostcode() -> String {
-        UserDefaults.standard.string(forKey: "postcode") ?? ""
-    }
-
-    func setPostcode(postcode: String) {
-        UserDefaults.standard.set(postcode, forKey: "postcode")
-    }
-}
-
 class AppState: ObservableObject {
     @Published var isPriceDataLoading = false
     @Published var userPostcode = UserDefaults.standard.string(forKey: "postcode") ?? ""
