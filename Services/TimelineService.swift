@@ -6,35 +6,13 @@
 //
 import WidgetKit
 
-class TimelineService {
+class TimelineService: RateResponseHandler {
     static let shared = TimelineService()
-
+    
     func generateTimeline(postcode: String?) async -> Timeline<
         OctopusWidgetEntry
     > {
-        guard let postcode else {
-            return noPostcodeResponse()
-        }
-
-        if postcode == "" {
-            return noPostcodeResponse()
-        }
-
-        do {
-            let location = try await RateService.shared.fetchGridSupplyPoint(
-                postcode: postcode,
-            )
-
-            let response = try await RateService.shared.fetchAgileRates(
-                tariffCode: TariffCodes.agileOct2024,
-                supplyPointID: location,
-            )
-            return successResponse(rates: response.results)
-        } catch RateServiceError.incorrectPostcode {
-            return postcodeError()
-        } catch {
-            return networkError()
-        }
+        return await RateHelper.shared.generateRateFeed(postcode: postcode, rateResponseHandler: self)
     }
 
     /// Creates a timeline of widget entries from the provided rate data.
@@ -50,7 +28,7 @@ class TimelineService {
     ///   the next day at 4pm. An edge case is added `min(lastTo, releaseTomorrow)` so that if somehow
     ///   the next day's rate is not fetched till 4pm, it will reload at the earliest date. It should retry every hour after
     ///   4pm if the data for tomorrow is not loaded
-    private func successResponse(rates: [UnitRates]) -> Timeline<
+    internal func successResponse(rates: [UnitRates]) -> Timeline<
         OctopusWidgetEntry
     > {
         var calendar = Calendar.current
@@ -131,7 +109,7 @@ class TimelineService {
         return Timeline(entries: entries, policy: .after(nextRetry))
     }
 
-    private func networkError() -> Timeline<OctopusWidgetEntry> {
+    internal func networkError() -> Timeline<OctopusWidgetEntry> {
         let retry = Calendar.current.date(
             byAdding: .minute,
             value: 15,
@@ -153,7 +131,7 @@ class TimelineService {
         )
     }
 
-    private func postcodeError() -> Timeline<OctopusWidgetEntry> {
+    internal func postcodeError() -> Timeline<OctopusWidgetEntry> {
         Timeline(
             entries: [
                 OctopusWidgetEntry(
@@ -170,7 +148,7 @@ class TimelineService {
         )
     }
 
-    private func noPostcodeResponse() -> Timeline<OctopusWidgetEntry> {
+    internal func noPostcodeResponse() -> Timeline<OctopusWidgetEntry> {
         Timeline(
             entries: [
                 OctopusWidgetEntry(

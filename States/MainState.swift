@@ -19,4 +19,30 @@ class AppState: ObservableObject {
         userPostcode = postcode
         UserDefaults.standard.set(postcode, forKey: "postcode")
     }
+    
+//    func getRates() async -> [UnitRates] {
+//        guard let userPostcode else {
+//            return noPostcodeResponse()
+//        }
+//
+//        if userPostcode == "" {
+//            return noPostcodeResponse()
+//        }
+//
+//        do {
+//            let location = try await RateService.shared.fetchGridSupplyPoint(
+//                postcode: userPostcode,
+//            )
+//
+//            let response = try await RateService.shared.fetchAgileRates(
+//                tariffCode: TariffCodes.agileOct2024,
+//                supplyPointID: location,
+//            )
+//            return successResponse(rates: response.results)
+//        } catch RateServiceError.incorrectPostcode {
+//            return postcodeError()
+//        } catch {
+//            return networkError()
+//        }
+//    }
 }

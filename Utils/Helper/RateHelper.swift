@@ -8,12 +8,15 @@ import SwiftUI
 
 class RateHelper {
     static let shared = RateHelper()
-    
+    private var calendar: Calendar = {
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone(identifier: "Europe/London")!
+        return calendar
+    }()
+
     func getAverageRateAndTodaysRate(rates: [UnitRates]) -> (
         averages: [Date: Double], todayRatesList: [UnitRates]
     ) {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "Europe/London")!
         // Group rates by their day
         var dailyRates: [Date: [Double]] = [:]
 
@@ -45,5 +48,31 @@ class RateHelper {
         }
 
         return (averages: averages, todayRatesList: todayRatesList)
+    }
+    
+    func generateRateFeed<H: RateResponseHandler>(postcode: String?, rateResponseHandler: H) async -> H.T {
+        guard let postcode else {
+            return rateResponseHandler.noPostcodeResponse()
+        }
+        
+        if postcode == "" {
+            return rateResponseHandler.noPostcodeResponse()
+        }
+        
+        do {
+            let location = try await RateService.shared.fetchGridSupplyPoint(
+                postcode: postcode,
+            )
+            
+            let response = try await RateService.shared.fetchAgileRates(
+                tariffCode: TariffCodes.agileOct2024,
+                supplyPointID: location,
+            )
+            return rateResponseHandler.successResponse(rates: response.results)
+        } catch RateServiceError.incorrectPostcode {
+            return rateResponseHandler.postcodeError()
+        } catch {
+            return rateResponseHandler.networkError()
+        }
     }
 }

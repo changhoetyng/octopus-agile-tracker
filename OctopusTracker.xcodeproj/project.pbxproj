@@ -76,10 +76,11 @@
 			);
 			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
 		};
-		6545F5432E4A7F02007DAA91 /* Exceptions for "Utils" folder in "OctopusPricingWidgetExtension" target */ = {
+		6545F54A2E4A9098007DAA91 /* Exceptions for "Utils" folder in "OctopusPricingWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				RateHelper.swift,
+				Helper/RateHelper.swift,
+				Protocols/RateProtocols.swift,
 			);
 			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
 		};
@@ -135,7 +136,7 @@
 		6545F53E2E4A7E56007DAA91 /* Utils */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				6545F5432E4A7F02007DAA91 /* Exceptions for "Utils" folder in "OctopusPricingWidgetExtension" target */,
+				6545F54A2E4A9098007DAA91 /* Exceptions for "Utils" folder in "OctopusPricingWidgetExtension" target */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
