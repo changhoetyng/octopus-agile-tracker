@@ -37,44 +37,6 @@ class TimelineService {
         }
     }
 
-    private func getAverageRate(rates: [UnitRates]) -> (
-        averages: [Date: Double], todayRatesList: [UnitRates]
-    ) {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "Europe/London")!
-        // Group rates by their day
-        var dailyRates: [Date: [Double]] = [:]
-
-        // sort rates with date
-        let sortedRates =
-            rates.count > 1
-                ? rates.sorted(by: { $0.validFrom < $1.validFrom })
-                : rates
-
-        // only filter rates to today rates
-        let now = Date()
-        let startOfToday = calendar.startOfDay(for: now)
-        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
-        // Filter only today's rates into the dictionary
-        let todayRatesList = sortedRates
-            .filter { rate in
-                rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
-            }
-
-        for rate in sortedRates {
-            let day = calendar.startOfDay(for: rate.validFrom)
-            dailyRates[day, default: []].append(rate.valueIncVat)
-        }
-        // Compute average for each day
-        var averages: [Date: Double] = [:]
-        for (day, values) in dailyRates {
-            let total = values.reduce(0.0) { $0 + $1 }
-            averages[day] = total / Double(values.count)
-        }
-
-        return (averages: averages, todayRatesList: todayRatesList)
-    }
-
     /// Creates a timeline of widget entries from the provided rate data.
     ///
     /// Converts each `UnitRates` into an `OctopusWidgetEntry` and computes the
@@ -93,7 +55,7 @@ class TimelineService {
     > {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "Europe/London")!
-        let averagesDate = getAverageRate(rates: rates)
+        let averagesDate = RateHelper.shared.getAverageRateAndTodaysRate(rates: rates)
         var entries: [OctopusWidgetEntry] = []
         for rate in rates {
             let day = calendar.startOfDay(for: rate.validFrom)
