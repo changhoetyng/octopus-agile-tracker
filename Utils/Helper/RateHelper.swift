@@ -8,7 +8,7 @@ import SwiftUI
 
 class RateHelper {
     static let shared = RateHelper()
-    private var calendar: Calendar = GloberHelper.shared.sharedCalendar
+    private let calendar: Calendar = GloberHelper.shared.sharedCalendar
 
     func getAverageRateAndTodaysRate(rates: [UnitRates]) -> (
         averages: [Date: Double], sortedRates: [UnitRates]

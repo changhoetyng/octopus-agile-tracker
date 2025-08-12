@@ -31,7 +31,7 @@ class TimelineService: RateResponseHandler {
     internal func successResponse(rates: [UnitRates]) -> Timeline<
         OctopusWidgetEntry
     > {
-        var calendar = GloberHelper.shared.sharedCalendar
+        let calendar = GloberHelper.shared.sharedCalendar
         let averagesDate = RateHelper.shared.getAverageRateAndTodaysRate(rates: rates)
         var entries: [OctopusWidgetEntry] = []
         for rate in rates {
