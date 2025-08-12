@@ -8,14 +8,10 @@ import SwiftUI
 
 class RateHelper {
     static let shared = RateHelper()
-    private var calendar: Calendar = {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "Europe/London")!
-        return calendar
-    }()
+    private var calendar: Calendar = GloberHelper.shared.sharedCalendar
 
     func getAverageRateAndTodaysRate(rates: [UnitRates]) -> (
-        averages: [Date: Double], todayRatesList: [UnitRates]
+        averages: [Date: Double], sortedRates: [UnitRates]
     ) {
         // Group rates by their day
         var dailyRates: [Date: [Double]] = [:]
@@ -27,15 +23,15 @@ class RateHelper {
                 : rates
 
         // only filter rates to today rates
-        let now = Date()
-        let startOfToday = calendar.startOfDay(for: now)
-        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
+//        let now = Date()
+//        let startOfToday = calendar.startOfDay(for: now)
+//        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
         // Filter only today's rates into the dictionary
-        let todayRatesList = sortedRates
-            .filter { rate in
-                rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
-            }
-
+//        let todayRatesList = sortedRates
+//            .filter { rate in
+//                rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
+//            }
+//
         for rate in sortedRates {
             let day = calendar.startOfDay(for: rate.validFrom)
             dailyRates[day, default: []].append(rate.valueIncVat)
@@ -47,7 +43,7 @@ class RateHelper {
             averages[day] = total / Double(values.count)
         }
 
-        return (averages: averages, todayRatesList: todayRatesList)
+        return (averages: averages, sortedRates: sortedRates)
     }
     
     func generateRateFeed<H: RateResponseHandler>(postcode: String?, rateResponseHandler: H) async -> H.T {

@@ -33,3 +33,14 @@ struct UnitRates: Decodable {
 enum TariffCodes: String, CaseIterable {
     case agileOct2024 = "AGILE-24-10-01"
 }
+
+enum AppRatesErrorType: Error {
+    case noPostcode
+    case incorrectPostcode
+    case networkError
+}
+
+struct AppRatesResponse {
+    let dailyPrices: [UnitRates]
+    let error: AppRatesErrorType?
+}

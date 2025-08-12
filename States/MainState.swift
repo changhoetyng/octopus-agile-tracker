@@ -46,3 +46,27 @@ class AppState: ObservableObject {
 //        }
 //    }
 }
+//
+//class MainAppRateService: RateResponseHandler {
+//    typealias T = AppRatesResponse
+//    
+//    internal func noPostcodeResponse() -> AppRatesResponse {
+//        return AppRatesResponse(dailyPrices: [], error: AppRatesErrorType.noPostcode)
+//    }
+//    
+//    func successResponse(rates: [UnitRates]) -> AppRatesResponse {
+//        <#code#>
+//    }
+//    
+//    internal func networkError() -> AppRatesResponse {
+//        return AppRatesResponse(dailyPrices: [], error: AppRatesErrorType.networkError)
+//    }
+//    
+//    internal func postcodeError() -> AppRatesResponse {
+//        return AppRatesResponse(dailyPrices: [], error: AppRatesErrorType.incorrectPostcode)
+//    }
+//    
+//    func generateTimeline(postcode: String?) async -> AppRatesResponse {
+//        <#code#>
+//    }
+//}

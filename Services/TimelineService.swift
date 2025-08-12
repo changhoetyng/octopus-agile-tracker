@@ -31,8 +31,7 @@ class TimelineService: RateResponseHandler {
     internal func successResponse(rates: [UnitRates]) -> Timeline<
         OctopusWidgetEntry
     > {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone(identifier: "Europe/London")!
+        var calendar = GloberHelper.shared.sharedCalendar
         let averagesDate = RateHelper.shared.getAverageRateAndTodaysRate(rates: rates)
         var entries: [OctopusWidgetEntry] = []
         for rate in rates {
@@ -45,7 +44,7 @@ class TimelineService: RateResponseHandler {
                     toDate: rate.validTo,
                     pricePerKWh: rate.valueIncVat,
                     averagePrice: average,
-                    dailyPrices: averagesDate.todayRatesList,
+                    dailyPrices: averagesDate.sortedRates,
                 ),
             )
         }

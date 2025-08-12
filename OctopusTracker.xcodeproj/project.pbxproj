@@ -79,6 +79,7 @@
 		6545F54A2E4A9098007DAA91 /* Exceptions for "Utils" folder in "OctopusPricingWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Helper/GloberHelper.swift,
 				Helper/RateHelper.swift,
 				Protocols/RateProtocols.swift,
 			);
