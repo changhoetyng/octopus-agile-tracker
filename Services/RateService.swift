@@ -20,7 +20,8 @@ class RateService {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
 
-        let midnight = Calendar.current.startOfDay(for: Date())
+        let calendar = Calendar.current
+        let midnight = calendar.startOfDay(for: Date())
 
         let periodFrom = isoFormatter.string(from: midnight)
 
