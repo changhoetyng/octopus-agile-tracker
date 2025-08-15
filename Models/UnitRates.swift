@@ -34,7 +34,7 @@ enum TariffCodes: String, CaseIterable {
     case agileOct2024 = "AGILE-24-10-01"
 }
 
-enum AppRatesErrorType: Error {
+enum FetchRatesErrorType: Error {
     case noPostcode
     case incorrectPostcode
     case networkError
@@ -42,5 +42,5 @@ enum AppRatesErrorType: Error {
 
 struct AppRatesResponse {
     let unitRates: [UnitRates]
-    let error: AppRatesErrorType?
+    let error: FetchRatesErrorType?
 }

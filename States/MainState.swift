@@ -25,27 +25,14 @@ import SwiftUI
 
         logger.info("Setting postcode to \(postcode)")
 
-        if postcode != "" {
-            isPriceDataLoading = true
-            Task {
-                let location = try await RateService.shared
-                    .fetchGridSupplyPoint(
-                        postcode: userPostcode,
-                    )
+        isPriceDataLoading = true
+        Task {
+            let appRatesResponse = await MainAppRateService.shared.generateTimeline(postcode: userPostcode)
 
-                let response = try await RateService.shared.fetchAgileRates(
-                    tariffCode: TariffCodes.agileOct2024,
-                    supplyPointID: location,
-                )
-
-                await MainActor.run {
-                    self.ratesResponse = AppRatesResponse(
-                        unitRates: response.results,
-                        error: nil,
-                    )
-                    self.isPriceDataLoading = false
-                    logger.info("Done rates")
-                }
+            await MainActor.run {
+                self.ratesResponse = appRatesResponse
+                self.isPriceDataLoading = false
+                logger.info("Done rates")
             }
         }
     }
@@ -85,32 +72,32 @@ class MainAppRateService: RateResponseHandler {
     func noPostcodeResponse() -> AppRatesResponse {
         AppRatesResponse(
             unitRates: [],
-            error: AppRatesErrorType.noPostcode,
+            error: FetchRatesErrorType.noPostcode,
         )
     }
 
-    func successResponse(rates: [UnitRates]) -> AppRatesResponse {
+    func successResponse(rates: [UnitRates], error: FetchRatesErrorType?) -> AppRatesResponse {
         let averagesAndRates = RateHelper.shared.getAverageRateAndTodaysRate(
             rates: rates,
         )
 
         return AppRatesResponse(
             unitRates: averagesAndRates.sortedRates,
-            error: nil,
+            error: error ?? nil,
         )
     }
 
     func networkError() -> AppRatesResponse {
         AppRatesResponse(
             unitRates: [],
-            error: AppRatesErrorType.networkError,
+            error: FetchRatesErrorType.networkError,
         )
     }
 
     func postcodeError() -> AppRatesResponse {
         AppRatesResponse(
             unitRates: [],
-            error: AppRatesErrorType.incorrectPostcode,
+            error: FetchRatesErrorType.incorrectPostcode,
         )
     }
 
@@ -118,6 +105,7 @@ class MainAppRateService: RateResponseHandler {
         await RateHelper.shared.generateRateFeed(
             postcode: postcode,
             rateResponseHandler: self,
+            defaultTariffCodeOnError: true,
         )
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SkeletonLoadingView: ViewModifier {
     var isLoading: Bool
-    
+
     @State private var blinking: Bool = false
 
     func body(content: Content) -> some View {

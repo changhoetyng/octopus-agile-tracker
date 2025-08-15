@@ -7,10 +7,6 @@
 
 import Foundation
 
-enum RateServiceError: Error {
-    case incorrectPostcode
-}
-
 class RateService {
     static let shared = RateService()
 
@@ -74,11 +70,11 @@ class RateService {
 
         // If result length is not 1 and more than 1, throw error
         if response.results.count != 1 {
-            throw RateServiceError.incorrectPostcode
+            throw FetchRatesErrorType.incorrectPostcode
         }
 
         guard let point = response.results.first?.supplyPointID else {
-            throw RateServiceError.incorrectPostcode
+            throw FetchRatesErrorType.incorrectPostcode
         }
 
         return point

@@ -33,7 +33,7 @@ struct AgileRatesTable: View {
             }
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 8)  // Reduced from 12 to 8
+        .padding(.bottom, 8) // Reduced from 12 to 8
 
         // Table content
         ScrollView {
@@ -50,6 +50,6 @@ struct AgileRatesTable: View {
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
             }
             .skeletonLoadingView(isLoading: appState.isPriceDataLoading)
-        }.frame(height: 270)  // Reduced from 350 to 250
+        }.frame(height: 270) // Reduced from 350 to 250
     }
 }

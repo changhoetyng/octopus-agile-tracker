@@ -39,35 +39,49 @@ class RateHelper {
         postcode: String?,
         rateResponseHandler: H,
         defaultTariffCodeOnError: Bool = false,
-    ) async -> H.T {
-        guard let postcode else {
-            return rateResponseHandler.noPostcodeResponse()
-        }
+    ) async -> (H.T) {
+        var error: FetchRatesErrorType? = nil
 
-        if postcode == "", !defaultTariffCodeOnError {
+//        guard let postcode else {
+//            return rateResponseHandler.noPostcodeResponse()
+//        }
+
+        if postcode == nil || postcode == "", !defaultTariffCodeOnError {
             return rateResponseHandler.noPostcodeResponse()
         }
 
         do {
             let location: String
-            do {
-                location = try await RateService.shared.fetchGridSupplyPoint(
-                    postcode: postcode,
-                )
-            } catch RateServiceError.incorrectPostcode {
-                if defaultTariffCodeOnError {
-                    location = "A"
-                } else {
-                    throw RateServiceError.incorrectPostcode
+
+            if let postcode, !postcode.isEmpty {
+                do {
+                    location = try await RateService.shared.fetchGridSupplyPoint(
+                        postcode: postcode,
+                    )
+                } catch FetchRatesErrorType.incorrectPostcode {
+                    if defaultTariffCodeOnError {
+                        location = "A"
+                        error = FetchRatesErrorType.incorrectPostcode
+                    } else {
+                        throw FetchRatesErrorType.incorrectPostcode
+                    }
                 }
+            } else {
+                location = "A"
+                error = FetchRatesErrorType.noPostcode
             }
 
             let response = try await RateService.shared.fetchAgileRates(
                 tariffCode: TariffCodes.agileOct2024,
                 supplyPointID: location,
             )
-            return rateResponseHandler.successResponse(rates: response.results)
-        } catch RateServiceError.incorrectPostcode {
+            if defaultTariffCodeOnError {
+                // if there is default tariff, we should check what the error is
+                return rateResponseHandler.successResponse(rates: response.results, error: error)
+            } else {
+                return rateResponseHandler.successResponse(rates: response.results)
+            }
+        } catch FetchRatesErrorType.incorrectPostcode {
             return rateResponseHandler.postcodeError()
         } catch {
             return rateResponseHandler.networkError()

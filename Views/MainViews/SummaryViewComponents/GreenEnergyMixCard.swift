@@ -2,7 +2,7 @@ import SwiftUI
 
 struct GreenEnergyMixCard: View {
     @EnvironmentObject var appState: AppState
-    
+
     private func textColor(
         percentageThreshold: Double,
         percentage: Double,
