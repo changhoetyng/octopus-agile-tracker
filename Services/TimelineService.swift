@@ -8,11 +8,11 @@ import WidgetKit
 
 class TimelineService: RateResponseHandler {
     static let shared = TimelineService()
-    
+
     func generateTimeline(postcode: String?) async -> Timeline<
         OctopusWidgetEntry
     > {
-        return await RateHelper.shared.generateRateFeed(postcode: postcode, rateResponseHandler: self)
+        await RateHelper.shared.generateRateFeed(postcode: postcode, rateResponseHandler: self)
     }
 
     /// Creates a timeline of widget entries from the provided rate data.
@@ -28,7 +28,7 @@ class TimelineService: RateResponseHandler {
     ///   the next day at 4pm. An edge case is added `min(lastTo, releaseTomorrow)` so that if somehow
     ///   the next day's rate is not fetched till 4pm, it will reload at the earliest date. It should retry every hour after
     ///   4pm if the data for tomorrow is not loaded
-    internal func successResponse(rates: [UnitRates]) -> Timeline<
+    func successResponse(rates: [UnitRates]) -> Timeline<
         OctopusWidgetEntry
     > {
         let calendar = GloberHelper.shared.sharedCalendar
@@ -44,7 +44,7 @@ class TimelineService: RateResponseHandler {
                     toDate: rate.validTo,
                     pricePerKWh: rate.valueIncVat,
                     averagePrice: average,
-                    dailyPrices: averagesDate.sortedRates,
+                    unitRates: averagesDate.sortedRates,
                 ),
             )
         }
@@ -108,7 +108,7 @@ class TimelineService: RateResponseHandler {
         return Timeline(entries: entries, policy: .after(nextRetry))
     }
 
-    internal func networkError() -> Timeline<OctopusWidgetEntry> {
+    func networkError() -> Timeline<OctopusWidgetEntry> {
         let retry = Calendar.current.date(
             byAdding: .minute,
             value: 15,
@@ -123,14 +123,14 @@ class TimelineService: RateResponseHandler {
                     isError: true,
                     pricePerKWh: 0,
                     averagePrice: 0,
-                    dailyPrices: [],
+                    unitRates: [],
                 ),
             ],
             policy: .after(retry),
         )
     }
 
-    internal func postcodeError() -> Timeline<OctopusWidgetEntry> {
+    func postcodeError() -> Timeline<OctopusWidgetEntry> {
         Timeline(
             entries: [
                 OctopusWidgetEntry(
@@ -140,14 +140,14 @@ class TimelineService: RateResponseHandler {
                     isPostcodeWrong: true,
                     pricePerKWh: 0,
                     averagePrice: 0,
-                    dailyPrices: [],
+                    unitRates: [],
                 ),
             ],
             policy: .never,
         )
     }
 
-    internal func noPostcodeResponse() -> Timeline<OctopusWidgetEntry> {
+    func noPostcodeResponse() -> Timeline<OctopusWidgetEntry> {
         Timeline(
             entries: [
                 OctopusWidgetEntry(
@@ -157,7 +157,7 @@ class TimelineService: RateResponseHandler {
                     isPostcodeMissing: true,
                     pricePerKWh: 0,
                     averagePrice: 0,
-                    dailyPrices: [],
+                    unitRates: [],
                 ),
             ],
             policy: .never,

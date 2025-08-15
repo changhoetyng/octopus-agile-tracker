@@ -11,12 +11,12 @@ import SwiftUI
 struct AgileTrackerMediumWidget: View {
     var entry: OctopusWidgetEntry
     let calendar: Calendar = GloberHelper.shared.sharedCalendar
-    
+
     private var todayPrices: [UnitRates] {
         let now = Date()
         let startOfToday = calendar.startOfDay(for: now)
         let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
-        let todayRatesList = entry.dailyPrices.filter { rate in
+        let todayRatesList = entry.unitRates.filter { rate in
             rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
         }
         return todayRatesList

@@ -55,7 +55,7 @@ struct AgileRates: View {
             }
         }
         .padding(.bottom, 14)
-        AgileRatesChart(dailyPrices: mockDailyPrices)
+        AgileRatesChart(unitRates: mockDailyPrices)
         Spacer().frame(height: 20)
         AgileRatesTable()
     }

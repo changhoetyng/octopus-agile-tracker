@@ -19,7 +19,7 @@ struct DetailProvider: AppIntentTimelineProvider {
             isPostcodeMissing: true,
             pricePerKWh: 0.10,
             averagePrice: 0,
-            dailyPrices: [],
+            unitRates: [],
         )
     }
 
@@ -34,7 +34,7 @@ struct DetailProvider: AppIntentTimelineProvider {
             isPostcodeMissing: true,
             pricePerKWh: 0.10,
             averagePrice: 0,
-            dailyPrices: [],
+            unitRates: [],
         )
     }
 
@@ -120,6 +120,6 @@ struct OctopusPricingWidget: Widget {
         toDate: Date(),
         pricePerKWh: 10,
         averagePrice: 20,
-        dailyPrices: mockDailyPrices,
+        unitRates: mockDailyPrices,
     )
 }

@@ -16,7 +16,7 @@ struct OctopusWidgetEntry: TimelineEntry {
     let isPostcodeWrong: Bool
     let pricePerKWh: Double
     let averagePrice: Double
-    let dailyPrices: [UnitRates]
+    let unitRates: [UnitRates]
 
     init(
         date: Date,
@@ -27,7 +27,7 @@ struct OctopusWidgetEntry: TimelineEntry {
         isPostcodeWrong: Bool = false,
         pricePerKWh: Double,
         averagePrice: Double,
-        dailyPrices: [UnitRates],
+        unitRates: [UnitRates],
     ) {
         self.date = date
         self.fromDate = fromDate
@@ -37,7 +37,7 @@ struct OctopusWidgetEntry: TimelineEntry {
         self.isPostcodeWrong = isPostcodeWrong
         self.pricePerKWh = pricePerKWh
         self.averagePrice = averagePrice
-        self.dailyPrices = dailyPrices
+        self.unitRates = unitRates
     }
 }
 

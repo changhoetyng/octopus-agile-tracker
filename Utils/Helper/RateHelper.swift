@@ -13,7 +13,6 @@ class RateHelper {
     func getAverageRateAndTodaysRate(rates: [UnitRates]) -> (
         averages: [Date: Double], sortedRates: [UnitRates]
     ) {
-        // Group rates by their day
         var dailyRates: [Date: [Double]] = [:]
 
         // sort rates with date
@@ -22,16 +21,6 @@ class RateHelper {
                 ? rates.sorted(by: { $0.validFrom < $1.validFrom })
                 : rates
 
-        // only filter rates to today rates
-//        let now = Date()
-//        let startOfToday = calendar.startOfDay(for: now)
-//        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
-        // Filter only today's rates into the dictionary
-//        let todayRatesList = sortedRates
-//            .filter { rate in
-//                rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
-//            }
-//
         for rate in sortedRates {
             let day = calendar.startOfDay(for: rate.validFrom)
             dailyRates[day, default: []].append(rate.valueIncVat)
@@ -45,21 +34,34 @@ class RateHelper {
 
         return (averages: averages, sortedRates: sortedRates)
     }
-    
-    func generateRateFeed<H: RateResponseHandler>(postcode: String?, rateResponseHandler: H) async -> H.T {
+
+    func generateRateFeed<H: RateResponseHandler>(
+        postcode: String?,
+        rateResponseHandler: H,
+        defaultTariffCodeOnError: Bool = false,
+    ) async -> H.T {
         guard let postcode else {
             return rateResponseHandler.noPostcodeResponse()
         }
-        
-        if postcode == "" {
+
+        if postcode == "", !defaultTariffCodeOnError {
             return rateResponseHandler.noPostcodeResponse()
         }
-        
+
         do {
-            let location = try await RateService.shared.fetchGridSupplyPoint(
-                postcode: postcode,
-            )
-            
+            let location: String
+            do {
+                location = try await RateService.shared.fetchGridSupplyPoint(
+                    postcode: postcode,
+                )
+            } catch RateServiceError.incorrectPostcode {
+                if defaultTariffCodeOnError {
+                    location = "A"
+                } else {
+                    throw RateServiceError.incorrectPostcode
+                }
+            }
+
             let response = try await RateService.shared.fetchAgileRates(
                 tariffCode: TariffCodes.agileOct2024,
                 supplyPointID: location,

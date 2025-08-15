@@ -41,6 +41,6 @@ enum AppRatesErrorType: Error {
 }
 
 struct AppRatesResponse {
-    let dailyPrices: [UnitRates]
+    let unitRates: [UnitRates]
     let error: AppRatesErrorType?
 }

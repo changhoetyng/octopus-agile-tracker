@@ -22,7 +22,6 @@ struct PostcodeInputBar: View {
         tempPostcode = tempPostcode.replacingOccurrences(of: " ", with: "")
 
         appState.setPostcode(postcode: tempPostcode)
-        tempPostcode = ""
     }
 
     func deletePostcode() {
@@ -56,6 +55,10 @@ struct PostcodeInputBar: View {
                     Button(action: deletePostcode) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.gray)
+                    }
+                    if appState.ratesResponse != nil {
+                        Text(String(format: "%.2f", appState.ratesResponse?.unitRates[0].valueIncVat ?? 0))
+                            .foregroundColor(.green)
                     }
                 }
             }

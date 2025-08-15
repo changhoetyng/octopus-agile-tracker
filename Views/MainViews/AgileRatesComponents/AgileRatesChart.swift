@@ -8,7 +8,7 @@ import Charts
 import SwiftUI
 
 struct AgileRatesChart: View {
-    let dailyPrices: [UnitRates]
+    let unitRates: [UnitRates]
 
     @State var selectedDate: Date?
     @State var selectedPrice: Double?
@@ -30,7 +30,7 @@ struct AgileRatesChart: View {
     }
 
     private func mappedDateToValidFrom(date: Date) -> UnitRates? {
-        dailyPrices.first(where: { item in
+        unitRates.first(where: { item in
             item.validFrom <= date && item.validTo > date
         })
     }
@@ -40,7 +40,7 @@ struct AgileRatesChart: View {
             AgileRatesChartLoadingView()
         } else {
             Chart {
-                ForEach(dailyPrices, id: \.validFrom) { item in
+                ForEach(unitRates, id: \.validFrom) { item in
                     BarMark(
                         x: .value("Time", item.validFrom),
                         y: .value("Price", item.valueIncVat),
@@ -50,13 +50,13 @@ struct AgileRatesChart: View {
                 }
                 if let selectedDate {
                     // Find the exact validFrom time for the selected bar
-                    if let selectedItem = dailyPrices.first(where: { item in
+                    if let selectedItem = unitRates.first(where: { item in
                         // Find the bar that contains the selected time
                         item.validFrom <= selectedDate
                             && item.validTo > selectedDate
                     }) {
                         RuleMark(
-                            x: .value("Selected Date", selectedItem.validFrom),  // Use the exact validFrom time
+                            x: .value("Selected Date", selectedItem.validFrom), // Use the exact validFrom time
                         )
                         .foregroundStyle(Color.blue)
                         .zIndex(-1)
@@ -70,10 +70,10 @@ struct AgileRatesChart: View {
                         ) {
                             VStack {
                                 Text(
-                                    "Time: \(formatter.string(from: selectedItem.validFrom))"
+                                    "Time: \(formatter.string(from: selectedItem.validFrom))",
                                 ).foregroundStyle(.white)
                                 Text(
-                                    "Price: \(String(format: "%.2f", selectedItem.valueIncVat))p/kWh"
+                                    "Price: \(String(format: "%.2f", selectedItem.valueIncVat))p/kWh",
                                 ).foregroundStyle(.white)
                             }
                             .frame(width: 200, height: 80)
