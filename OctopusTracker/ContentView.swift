@@ -9,8 +9,7 @@ import Charts
 import SwiftUI
 
 struct ContentView: View {
-    // Fetch data from timeline service
-    // let timeline = TimelineService.shared.getTimeline(postcode: MainState.shared.getPostcode())
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         VStack {
@@ -26,7 +25,9 @@ struct ContentView: View {
             }
             .padding(.horizontal, 20)
             .background(Color("BackgroundColor"))
-        }.background(Color("BackgroundColor"))
+        }.background(Color("BackgroundColor")).task {
+            appState.fetchTimeline()
+        }
     }
 }
 

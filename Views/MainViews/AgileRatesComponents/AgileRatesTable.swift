@@ -49,7 +49,7 @@ struct AgileRatesTable: View {
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
                 TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
             }
-            .skeletonLoadingView(isLoading: appState.isPriceDataLoading)
+            .skeletonLoadingView(isLoading: !appState.isPriceDataLoading.isEmpty)
         }.frame(height: 270) // Reduced from 350 to 250
     }
 }

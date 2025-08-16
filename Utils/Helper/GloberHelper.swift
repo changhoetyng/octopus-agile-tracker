@@ -1,4 +1,5 @@
 import Foundation
+import os.log
 
 class GloberHelper {
     static let shared = GloberHelper()
@@ -8,4 +9,6 @@ class GloberHelper {
         calendar.timeZone = TimeZone(identifier: "Europe/London")!
         return calendar
     }()
+
+    let logger = Logger()
 }

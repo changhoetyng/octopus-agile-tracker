@@ -5,63 +5,38 @@
 //  Created by Hoe Tyng Chang on 26/07/2025.
 //
 
-import os.log
 import SwiftUI
 
+enum LoadingType {
+    case fetchTimeline
+}
+
 @MainActor class AppState: ObservableObject {
-    @Published var isPriceDataLoading = false
+    @Published var isPriceDataLoading: Set<LoadingType> = []
     @Published var userPostcode = UserDefaults.standard.string(forKey: "postcode") ?? ""
     @Published var ratesResponse: AppRatesResponse?
-
-    func setIsPriceDataLoading(isLoading: Bool) {
-        isPriceDataLoading = isLoading
-    }
 
     func setPostcode(postcode: String) {
         userPostcode = postcode
         UserDefaults.standard.set(postcode, forKey: "postcode")
 
-        let logger = Logger()
+        GloberHelper.shared.logger.info("Setting postcode to \(postcode)")
 
-        logger.info("Setting postcode to \(postcode)")
+        fetchTimeline()
+    }
 
-        isPriceDataLoading = true
+    func fetchTimeline() {
+        isPriceDataLoading.insert(LoadingType.fetchTimeline)
         Task {
             let appRatesResponse = await MainAppRateService.shared.generateTimeline(postcode: userPostcode)
 
             await MainActor.run {
                 self.ratesResponse = appRatesResponse
-                self.isPriceDataLoading = false
-                logger.info("Done rates")
+                self.isPriceDataLoading.remove(LoadingType.fetchTimeline)
+                GloberHelper.shared.logger.info("Fetched Rates")
             }
         }
     }
-
-    //    func getRates() async -> [UnitRates] {
-    //        guard let userPostcode else {
-    //            return noPostcodeResponse()
-    //        }
-    //
-    //        if userPostcode == "" {
-    //            return noPostcodeResponse()
-    //        }
-    //
-    //        do {
-    //            let location = try await RateService.shared.fetchGridSupplyPoint(
-    //                postcode: userPostcode,
-    //            )
-    //
-    //            let response = try await RateService.shared.fetchAgileRates(
-    //                tariffCode: TariffCodes.agileOct2024,
-    //                supplyPointID: location,
-    //            )
-    //            return successResponse(rates: response.results)
-    //        } catch RateServiceError.incorrectPostcode {
-    //            return postcodeError()
-    //        } catch {
-    //            return networkError()
-    //        }
-    //    }
 }
 
 //

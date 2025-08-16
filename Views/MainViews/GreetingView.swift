@@ -18,7 +18,7 @@ struct GreetingView: View {
 
             // Status message based on app state
             Group {
-                if appState.isPriceDataLoading {
+                if !appState.isPriceDataLoading.isEmpty || appState.ratesResponse == nil {
                     Text("Loading price data...")
                         .font(.caption2)
                         .foregroundStyle(.white.opacity(0.8))

@@ -22,7 +22,7 @@ struct CostCard: View {
             }
             .padding(.top, 6)
             .padding(.bottom, 6)
-            .skeletonLoadingView(isLoading: appState.isPriceDataLoading)
+            .skeletonLoadingView(isLoading: !appState.isPriceDataLoading.isEmpty)
         }
     }
 }

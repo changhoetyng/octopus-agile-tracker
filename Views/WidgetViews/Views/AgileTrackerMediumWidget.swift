@@ -13,7 +13,7 @@ struct AgileTrackerMediumWidget: View {
     let calendar: Calendar = GloberHelper.shared.sharedCalendar
 
     private var todayPrices: [UnitRates] {
-        let now = Date()
+        let now = entry.date
         let startOfToday = calendar.startOfDay(for: now)
         let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
         let todayRatesList = entry.unitRates.filter { rate in
