@@ -43,4 +43,17 @@ enum FetchRatesErrorType: Error {
 struct AppRatesResponse {
     let unitRates: [UnitRates]
     let error: FetchRatesErrorType?
+    let regionDisplayName: String?
+
+    init(unitRates: [UnitRates], error: FetchRatesErrorType?, regionDisplayName: String) {
+        self.unitRates = unitRates
+        self.error = error
+        self.regionDisplayName = regionDisplayName
+    }
+
+    init(unitRates: [UnitRates], error: FetchRatesErrorType?) {
+        self.unitRates = unitRates
+        self.error = error
+        regionDisplayName = Region.easternEngland.displayName
+    }
 }

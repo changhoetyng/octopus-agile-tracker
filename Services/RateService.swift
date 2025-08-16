@@ -43,7 +43,7 @@ class RateService {
         return try decoder.decode(UnitRatesResponse.self, from: data)
     }
 
-    func fetchGridSupplyPoint(postcode: String) async throws -> String {
+    func fetchGridSupplyPoint(postcode: String) async throws -> (String, String) {
         let cleanPostcode =
             postcode
                 .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -77,6 +77,12 @@ class RateService {
             throw FetchRatesErrorType.incorrectPostcode
         }
 
-        return point
+        let displayName: String = if let name = response.results.first?.regionDisplayName {
+            name
+        } else {
+            "Unknown Region"
+        }
+
+        return (point, displayName)
     }
 }

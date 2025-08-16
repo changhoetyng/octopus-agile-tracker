@@ -10,7 +10,7 @@ protocol RateResponseHandler {
 
     func noPostcodeResponse() -> T
     func successResponse(rates: [UnitRates]) -> T
-    func successResponse(rates: [UnitRates], error: FetchRatesErrorType?) -> T
+    func successResponse(rates: [UnitRates], regionDisplayName: String, error: FetchRatesErrorType?) -> T
     func networkError() -> T
     func postcodeError() -> T
     func generateTimeline(postcode: String?) async -> T
@@ -21,7 +21,7 @@ extension RateResponseHandler {
         fatalError("Not implemented")
     }
 
-    func successResponse(rates _: [UnitRates], error _: FetchRatesErrorType?) -> T {
+    func successResponse(rates _: [UnitRates], regionDisplayName _: String, error _: FetchRatesErrorType?) -> T {
         fatalError("Not implemented")
     }
 }

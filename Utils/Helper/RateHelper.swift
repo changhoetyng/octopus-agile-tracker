@@ -42,33 +42,37 @@ class RateHelper {
     ) async -> (H.T) {
         var error: FetchRatesErrorType? = nil
 
-//        guard let postcode else {
-//            return rateResponseHandler.noPostcodeResponse()
-//        }
-
         if postcode == nil || postcode == "", !defaultTariffCodeOnError {
             return rateResponseHandler.noPostcodeResponse()
         }
+
+        var regionDisplayName = ""
 
         do {
             let location: String
 
             if let postcode, !postcode.isEmpty {
                 do {
-                    location = try await RateService.shared.fetchGridSupplyPoint(
+                    let fetchGridSupplyPointRes = try await RateService.shared.fetchGridSupplyPoint(
                         postcode: postcode,
                     )
+
+                    location = fetchGridSupplyPointRes.0
+                    regionDisplayName = fetchGridSupplyPointRes.1
+
                 } catch FetchRatesErrorType.incorrectPostcode {
                     if defaultTariffCodeOnError {
-                        location = "A"
+                        location = Region.easternEngland.rawValue
                         error = FetchRatesErrorType.incorrectPostcode
+                        regionDisplayName = Region.easternEngland.displayName
                     } else {
                         throw FetchRatesErrorType.incorrectPostcode
                     }
                 }
             } else {
-                location = "A"
+                location = Region.easternEngland.rawValue
                 error = FetchRatesErrorType.noPostcode
+                regionDisplayName = Region.easternEngland.displayName
             }
 
             let response = try await RateService.shared.fetchAgileRates(
@@ -77,7 +81,7 @@ class RateHelper {
             )
             if defaultTariffCodeOnError {
                 // if there is default tariff, we should check what the error is
-                return rateResponseHandler.successResponse(rates: response.results, error: error)
+                return rateResponseHandler.successResponse(rates: response.results, regionDisplayName: regionDisplayName, error: error)
             } else {
                 return rateResponseHandler.successResponse(rates: response.results)
             }

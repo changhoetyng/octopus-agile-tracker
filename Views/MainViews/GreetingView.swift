@@ -24,26 +24,26 @@ struct GreetingView: View {
                         .foregroundStyle(.white.opacity(0.8))
                         .skeletonLoadingView(isLoading: true)
                 } else if appState.ratesResponse == nil {
-                    Text("Showing prices for: Eastern England")
+                    Text("Showing prices for: \(appState.ratesResponse!.regionDisplayName ?? "")")
                         .font(.caption2)
                         .foregroundStyle(.white.opacity(0.8))
                 } else if let error = appState.ratesResponse?.error {
                     switch error {
                     case .incorrectPostcode:
-                        Text("Invalid Postcode - using default region (Eastern England)")
+                        Text("Invalid Postcode - using default region (\(appState.ratesResponse!.regionDisplayName ?? ""))")
                             .font(.caption2)
                             .foregroundStyle(.orange.opacity(0.9))
                     case .networkError:
-                        Text("Network error - using default region (Eastern England)")
+                        Text("Network error - using default region (\(appState.ratesResponse!.regionDisplayName ?? ""))")
                             .font(.caption2)
                             .foregroundStyle(.red.opacity(0.9))
                     case .noPostcode:
-                        Text("No Postcode Found - using default region (Eastern England)")
+                        Text("No Postcode Found - using default region (\(appState.ratesResponse!.regionDisplayName ?? ""))")
                             .font(.caption2)
                             .foregroundStyle(.red.opacity(0.9))
                     }
                 } else {
-                    Text("Showing prices for: Eastern England")
+                    Text("Showing prices for: \(appState.ratesResponse!.regionDisplayName ?? "")")
                         .font(.caption2)
                         .foregroundStyle(.white.opacity(0.8))
                 }
