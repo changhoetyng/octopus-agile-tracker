@@ -120,7 +120,7 @@ class MainAppRateService: RateResponseHandler {
     }
 
     func successResponse(rates: [UnitRates], regionDisplayName: String, error: FetchRatesErrorType?) -> AppRatesResponse {
-        let averagesAndRates = RateHelper.shared.getAverageRateAndTodaysRate(
+        let averagesAndRates = RateHelper.shared.getAverageRateAndSortedRate(
             rates: rates,
         )
 

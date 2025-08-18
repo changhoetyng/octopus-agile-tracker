@@ -32,7 +32,7 @@ class TimelineService: RateResponseHandler {
         OctopusWidgetEntry
     > {
         let calendar = GloberHelper.shared.sharedCalendar
-        let averagesDate = RateHelper.shared.getAverageRateAndTodaysRate(rates: rates)
+        let averagesDate = RateHelper.shared.getAverageRateAndSortedRate(rates: rates)
         var entries: [OctopusWidgetEntry] = []
         for rate in rates {
             let day = calendar.startOfDay(for: rate.validFrom)

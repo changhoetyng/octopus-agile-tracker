@@ -8,6 +8,14 @@
 import SwiftUI
 
 struct AgileRatesTable: View {
+    let unitRates: [UnitRates]
+
+    private var formatter: DateFormatter {
+        let f = DateFormatter()
+        f.dateFormat = "HH:mm"
+        return f
+    }
+
     @EnvironmentObject var appState: AppState
 
     var body: some View {
@@ -38,16 +46,9 @@ struct AgileRatesTable: View {
         // Table content
         ScrollView {
             VStack(spacing: 7) {
-                TableRowCard(time: "00:00", rate: "25.91p", percentage: "+25%")
-                TableRowCard(time: "01:00", rate: "22.45p", percentage: "-8%")
-                TableRowCard(time: "02:00", rate: "18.32p", percentage: "-23%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
-                TableRowCard(time: "03:00", rate: "15.67p", percentage: "-34%")
+                ForEach(unitRates, id: \.validFrom) { item in
+                    TableRowCard(time: formatter.string(from: item.validFrom), rate: String(format: "%.2f", item.valueIncVat), percentage: "+25%")
+                }
             }
             .skeletonLoadingView(isLoading: !appState.isPriceDataLoading.isEmpty)
         }.frame(height: 270) // Reduced from 350 to 250

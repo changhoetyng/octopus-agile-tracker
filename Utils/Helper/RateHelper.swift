@@ -10,7 +10,28 @@ class RateHelper {
     static let shared = RateHelper()
     private let calendar: Calendar = GloberHelper.shared.sharedCalendar
 
-    func getAverageRateAndTodaysRate(rates: [UnitRates]) -> (
+    func todayPrices(unitRates: [UnitRates], date: Date) -> [UnitRates] {
+        let now = date
+        let startOfToday = calendar.startOfDay(for: now)
+        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
+        let todayRatesList = unitRates.filter { rate in
+            rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
+        }
+        return todayRatesList
+    }
+
+    func tomorrowPrices(unitRates: [UnitRates], date: Date) -> [UnitRates] {
+        let now = date
+        let startOfToday = calendar.startOfDay(for: now)
+        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
+        let endOfTomorrow = calendar.date(byAdding: .day, value: 2, to: startOfToday)!
+        let tomorrowRatesList = unitRates.filter { rate in
+            rate.validFrom >= startOfTomorrow && rate.validFrom < endOfTomorrow
+        }
+        return tomorrowRatesList
+    }
+
+    func getAverageRateAndSortedRate(rates: [UnitRates]) -> (
         averages: [Date: Double], sortedRates: [UnitRates]
     ) {
         var dailyRates: [Date: [Double]] = [:]

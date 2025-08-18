@@ -13,6 +13,10 @@ struct AgileRates: View {
     @EnvironmentObject var appState: AppState
     private let hapticFeedback = UIImpactFeedbackGenerator(style: .light)
 
+    private var currentSelectedUnitRates: [UnitRates] {
+        filterCurrentUnitRates()
+    }
+
     var mockDailyPrices: [UnitRates] {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -32,6 +36,18 @@ struct AgileRates: View {
         }
 
         return prices
+    }
+
+    func filterCurrentUnitRates() -> [UnitRates] {
+        if selectedTab == 0 {
+            RateHelper.shared.todayPrices(unitRates: appState.ratesResponse?.unitRates ?? [], date: Date())
+        } else {
+            RateHelper.shared.tomorrowPrices(unitRates: appState.ratesResponse?.unitRates ?? [], date: Date())
+        }
+    }
+
+    func switchTabs(selectedTab: Int) {
+        self.selectedTab = selectedTab
     }
 
     var body: some View {
@@ -56,8 +72,8 @@ struct AgileRates: View {
             }
         }
         .padding(.bottom, 14)
-        AgileRatesChart(unitRates: appState.ratesResponse?.unitRates ?? [])
+        AgileRatesChart(unitRates: currentSelectedUnitRates)
         Spacer().frame(height: 20)
-        AgileRatesTable()
+        AgileRatesTable(unitRates: currentSelectedUnitRates)
     }
 }

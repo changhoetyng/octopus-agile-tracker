@@ -12,16 +12,6 @@ struct AgileTrackerMediumWidget: View {
     var entry: OctopusWidgetEntry
     let calendar: Calendar = GloberHelper.shared.sharedCalendar
 
-    private var todayPrices: [UnitRates] {
-        let now = entry.date
-        let startOfToday = calendar.startOfDay(for: now)
-        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
-        let todayRatesList = entry.unitRates.filter { rate in
-            rate.validFrom >= startOfToday && rate.validFrom < startOfTomorrow
-        }
-        return todayRatesList
-    }
-
     var body: some View {
         VStack {
             HStack {
@@ -43,7 +33,7 @@ struct AgileTrackerMediumWidget: View {
                 }
             }
             Chart {
-                ForEach(todayPrices, id: \.validFrom) { item in
+                ForEach(RateHelper.shared.todayPrices(unitRates: entry.unitRates, date: entry.date), id: \.validFrom) { item in
                     BarMark(
                         x: .value(
                             "Time",
