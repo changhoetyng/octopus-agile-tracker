@@ -49,7 +49,24 @@ enum LoadingType {
         func updateCurrentRate() {
             let now = Date()
 
-            let rate = ratesResponse?.unitRates.first(where: { item in
+            // Check if we need to fetch new timeline data
+            guard let ratesResponse,
+                  !ratesResponse.unitRates.isEmpty
+            else {
+                return
+            }
+
+            guard let lastRate = ratesResponse.unitRates.last else {
+                return
+            }
+
+            // Check if the last rate has expired (validTo is in the past)
+            if lastRate.validTo <= now {
+                fetchTimeline()
+                return
+            }
+
+            let rate = ratesResponse.unitRates.first(where: { item in
                 item.validFrom <= now
                     && item.validTo > now
             })
@@ -58,9 +75,9 @@ enum LoadingType {
                 // Calculate average price for the current day
                 let calendar = Calendar.current
                 let today = calendar.startOfDay(for: now)
-                let todaysRates = ratesResponse?.unitRates.filter { rate in
+                let todaysRates = ratesResponse.unitRates.filter { rate in
                     calendar.isDate(rate.validFrom, inSameDayAs: today)
-                } ?? []
+                }
 
                 let averagePrice = todaysRates.isEmpty ? 0.0 :
                     todaysRates.map(\.valueIncVat).reduce(0, +) / Double(todaysRates.count)
