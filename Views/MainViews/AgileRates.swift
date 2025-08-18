@@ -10,6 +10,7 @@ import SwiftUI
 
 struct AgileRates: View {
     @State private var selectedTab = 0
+    @EnvironmentObject var appState: AppState
     private let hapticFeedback = UIImpactFeedbackGenerator(style: .light)
 
     var mockDailyPrices: [UnitRates] {
@@ -55,7 +56,7 @@ struct AgileRates: View {
             }
         }
         .padding(.bottom, 14)
-        AgileRatesChart(unitRates: mockDailyPrices)
+        AgileRatesChart(unitRates: appState.ratesResponse?.unitRates ?? [])
         Spacer().frame(height: 20)
         AgileRatesTable()
     }

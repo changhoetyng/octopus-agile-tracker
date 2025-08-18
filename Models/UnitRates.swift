@@ -57,3 +57,8 @@ struct AppRatesResponse {
         regionDisplayName = Region.easternEngland.displayName
     }
 }
+
+struct CurrentRate {
+    let unitRates: UnitRates
+    let averagePrice: Double
+}
