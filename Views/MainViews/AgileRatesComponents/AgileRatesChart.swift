@@ -135,3 +135,18 @@ struct AgileRatesChartLoadingView: View {
             .frame(height: 150).skeletonLoadingView(isLoading: true)
     }
 }
+
+struct AgileRatesChartEmptyView: View {
+    var body: some View {
+        ZStack {
+            Rectangle().foregroundStyle(Color.gray).cornerRadius(14).opacity(0.3)
+                .frame(height: 150)
+            VStack {
+                Text("Tomorrow's rates aren’t available yet.\nThey’re usually published around 4 PM.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.white)
+                    .font(.callout)
+            }
+        }
+    }
+}

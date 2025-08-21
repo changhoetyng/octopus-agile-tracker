@@ -14,7 +14,7 @@ struct UnitRatesResponse: Decodable {
     let results: [UnitRates]
 }
 
-struct UnitRates: Decodable {
+struct UnitRates: Decodable, Equatable {
     let valueExcVat: Double
     let valueIncVat: Double
     let validFrom: Date

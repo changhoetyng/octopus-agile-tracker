@@ -13,6 +13,9 @@ struct AgileRates: View {
     @EnvironmentObject var appState: AppState
     private let hapticFeedback = UIImpactFeedbackGenerator(style: .light)
 
+    @State private var currentDate = Date()
+    @State private var midnightTimer: Timer? = nil
+
     private var currentSelectedUnitRates: [UnitRates] {
         filterCurrentUnitRates()
     }
@@ -46,6 +49,23 @@ struct AgileRates: View {
         }
     }
 
+    func scheduleMidnightTimer() {
+        midnightTimer?.invalidate()
+
+        // find the next midnight
+        let calendar = Calendar.current
+        if let nextMidnight = calendar.nextDate(after: Date(),
+                                                matching: DateComponents(hour: 0, minute: 0, second: 0),
+                                                matchingPolicy: .strict)
+        {
+            let interval = nextMidnight.timeIntervalSinceNow
+            midnightTimer = Timer.scheduledTimer(withTimeInterval: interval, repeats: false) { _ in
+                currentDate = Date()
+                scheduleMidnightTimer()
+            }
+        }
+    }
+
     func switchTabs(selectedTab: Int) {
         self.selectedTab = selectedTab
     }
@@ -70,10 +90,21 @@ struct AgileRates: View {
 
                 Spacer()
             }
+        }.onAppear {
+            scheduleMidnightTimer()
+        }
+        .onDisappear {
+            midnightTimer?.invalidate()
         }
         .padding(.bottom, 14)
-        AgileRatesChart(unitRates: currentSelectedUnitRates)
-        Spacer().frame(height: 20)
-        AgileRatesTable(unitRates: currentSelectedUnitRates)
+        if selectedTab == 1, currentSelectedUnitRates == [] {
+            AgileRatesChartEmptyView()
+            Spacer().frame(height: 20)
+            AgileRatesTable(unitRates: currentSelectedUnitRates, ifFakeLoading: true)
+        } else {
+            AgileRatesChart(unitRates: currentSelectedUnitRates)
+            Spacer().frame(height: 20)
+            AgileRatesTable(unitRates: currentSelectedUnitRates, ifFakeLoading: false)
+        }
     }
 }

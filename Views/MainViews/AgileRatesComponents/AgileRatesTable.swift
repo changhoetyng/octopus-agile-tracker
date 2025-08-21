@@ -9,16 +9,34 @@ import SwiftUI
 
 struct AgileRatesTable: View {
     let unitRates: [UnitRates]
-
-    private var formatter: DateFormatter {
-        let f = DateFormatter()
-        f.dateFormat = "HH:mm"
-        return f
-    }
+    let ifFakeLoading: Bool
 
     @EnvironmentObject var appState: AppState
 
+    func calculateAverageRate() -> Double {
+        guard !unitRates.isEmpty else { return 0 }
+
+        let total = unitRates.map(\.valueIncVat).reduce(0, +)
+        let avg = total / Double(unitRates.count)
+
+        return avg
+    }
+
+    func calculateVsAverageRatio(rate: Double, average: Double) -> (String, Color) {
+        if average == 0 {
+            return ("0%", Color.green)
+        }
+
+        let ratio = rate / average
+        let delta = abs(ratio - 1) * 100
+        let isBelow = ratio < 1
+        let color = isBelow ? Color.green : Color.red
+
+        return (String(format: "%.2f%%", delta), color)
+    }
+
     var body: some View {
+        let avg = calculateAverageRate()
         // Table header
         HStack(spacing: 16) {
             Text("Time")
@@ -37,20 +55,33 @@ struct AgileRatesTable: View {
                 Text("vs avg")
                     .foregroundColor(.gray)
                     .font(.system(size: 13, weight: .medium))
-                    .frame(width: 61, alignment: .trailing)
+                    .frame(width: 70, alignment: .trailing)
             }
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 8) // Reduced from 12 to 8
 
         // Table content
-        ScrollView {
-            VStack(spacing: 7) {
-                ForEach(unitRates, id: \.validFrom) { item in
-                    TableRowCard(time: formatter.string(from: item.validFrom), rate: String(format: "%.2f", item.valueIncVat), percentage: "+25%")
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 7) {
+                    ForEach(unitRates, id: \.validFrom) { item in
+                        TableRowCard(validFrom: item.validFrom, validTo: item.validTo, rate: String(format: "%.2f", item.valueIncVat), percentage: calculateVsAverageRatio(rate: item.valueIncVat, average: avg))
+                    }
+                }
+                .skeletonLoadingView(isLoading: ifFakeLoading || !appState.isPriceDataLoading.isEmpty)
+            }
+            .frame(height: 270)
+            .onChange(of: unitRates) {
+                if !unitRates.isEmpty {
+                    let now = Date()
+                    if let currentSlot = unitRates.first(where: { $0.validFrom <= now && $0.validTo > now }) {
+                        withAnimation(.easeInOut(duration: 0.5)) {
+                            proxy.scrollTo(currentSlot.validFrom, anchor: .top)
+                        }
+                    }
                 }
             }
-            .skeletonLoadingView(isLoading: !appState.isPriceDataLoading.isEmpty)
-        }.frame(height: 270) // Reduced from 350 to 250
+        }
     }
 }
