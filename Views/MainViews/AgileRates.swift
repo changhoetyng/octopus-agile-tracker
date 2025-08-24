@@ -30,8 +30,8 @@ struct AgileRates: View {
             let end = calendar.date(byAdding: .minute, value: 30, to: start)!
 
             return UnitRates(
-                valueExcVat: 20.0 + Double(index) * 0.5,
-                valueIncVat: 24.0 + Double(index) * 0.5,
+                valueExcVat: 0,
+                valueIncVat: 0,
                 validFrom: start,
                 validTo: end,
                 paymentMethod: "MockMethod\(index)",

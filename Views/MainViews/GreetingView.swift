@@ -10,6 +10,10 @@ import SwiftUI
 struct GreetingView: View {
     @EnvironmentObject var appState: AppState
 
+    func deletePostcode() {
+        appState.fetchTimeline()
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(generateGreeting())
@@ -34,9 +38,15 @@ struct GreetingView: View {
                             .font(.caption2)
                             .foregroundStyle(.orange.opacity(0.9))
                     case .networkError:
-                        Text("Network error - using default region (\(appState.ratesResponse!.regionDisplayName ?? ""))")
-                            .font(.caption2)
-                            .foregroundStyle(.red.opacity(0.9))
+                        HStack {
+                            Text("Network error - Please try again")
+                                .font(.caption2)
+                                .foregroundStyle(.red.opacity(0.9))
+                            Button(action: deletePostcode) {
+                                Image(systemName: "arrow.clockwise.circle.fill")
+                                    .foregroundColor(.gray)
+                            }
+                        }
                     case .noPostcode:
                         Text("No Postcode Found - using default region (\(appState.ratesResponse!.regionDisplayName ?? ""))")
                             .font(.caption2)

@@ -26,10 +26,6 @@ struct TableRowCard: View {
 
     var body: some View {
         TimelineView(.everyMinute) { _ in
-            var isCurrent: Bool {
-                validFrom <= Date() && validTo > Date()
-            }
-
             HStack(spacing: 16) {
                 // Time column
                 Text(time)
@@ -64,5 +60,12 @@ struct TableRowCard: View {
                     ),
             )
         }
+    }
+
+    // MARK: - Computed Properties
+
+    private var isCurrent: Bool {
+        let now = Date()
+        return validFrom <= now && validTo > now
     }
 }
