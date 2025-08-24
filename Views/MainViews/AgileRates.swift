@@ -100,7 +100,7 @@ struct AgileRates: View {
         if selectedTab == 1, currentSelectedUnitRates == [] {
             AgileRatesChartEmptyView()
             Spacer().frame(height: 20)
-            AgileRatesTable(unitRates: currentSelectedUnitRates, ifFakeLoading: true)
+            AgileRatesTable(unitRates: mockDailyPrices, ifFakeLoading: true)
         } else {
             AgileRatesChart(unitRates: currentSelectedUnitRates)
             Spacer().frame(height: 20)
