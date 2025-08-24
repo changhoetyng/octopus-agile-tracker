@@ -36,7 +36,7 @@ struct AgileRatesChart: View {
     }
 
     var body: some View {
-        if !appState.isPriceDataLoading.isEmpty {
+        if !appState.isPriceDataLoading.isEmpty || (appState.ratesResponse?.unitRates.isEmpty ?? true) {
             AgileRatesChartLoadingView()
         } else {
             Chart {

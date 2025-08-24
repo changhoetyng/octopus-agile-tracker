@@ -31,7 +31,7 @@ struct CostCard: View {
             }
             .padding(.top, 6)
             .padding(.bottom, 6)
-            .skeletonLoadingView(isLoading: !appState.isPriceDataLoading.isEmpty)
+            .skeletonLoadingView(isLoading: !appState.isPriceDataLoading.isEmpty || (appState.ratesResponse?.unitRates.isEmpty ?? true))
         }
     }
 }

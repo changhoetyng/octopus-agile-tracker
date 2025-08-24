@@ -97,14 +97,18 @@ struct AgileRates: View {
             midnightTimer?.invalidate()
         }
         .padding(.bottom, 14)
-        if selectedTab == 1, currentSelectedUnitRates == [] {
+        if selectedTab == 1, currentSelectedUnitRates == [], appState.ratesResponse?.unitRates.isEmpty == false {
             AgileRatesChartEmptyView()
             Spacer().frame(height: 20)
             AgileRatesTable(unitRates: mockDailyPrices, ifFakeLoading: true)
         } else {
             AgileRatesChart(unitRates: currentSelectedUnitRates)
             Spacer().frame(height: 20)
-            AgileRatesTable(unitRates: currentSelectedUnitRates, ifFakeLoading: false)
+            if appState.ratesResponse?.unitRates.isEmpty ?? true {
+                AgileRatesTable(unitRates: mockDailyPrices, ifFakeLoading: true)
+            } else {
+                AgileRatesTable(unitRates: currentSelectedUnitRates, ifFakeLoading: false)
+            }
         }
     }
 }
