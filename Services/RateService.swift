@@ -16,7 +16,7 @@ class RateService {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime]
 
-        let calendar = Calendar.current
+        let calendar = GloberHelper.shared.sharedCalendar
         let midnight = calendar.startOfDay(for: Date())
 
         let periodFrom = isoFormatter.string(from: midnight)

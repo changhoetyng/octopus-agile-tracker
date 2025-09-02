@@ -97,7 +97,7 @@ struct OctopusPricingWidget: Widget {
 #Preview(as: .systemSmall) {
     OctopusPricingWidget()
 } timeline: {
-    let calendar = Calendar.current
+    let calendar = GloberHelper.shared.sharedCalendar
     let now = Date()
     let today = calendar.startOfDay(for: now) // Midnight (00:00) of today
 

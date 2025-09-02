@@ -21,7 +21,7 @@ struct AgileRates: View {
     }
 
     var mockDailyPrices: [UnitRates] {
-        let calendar = Calendar.current
+        let calendar = GloberHelper.shared.sharedCalendar
         let today = calendar.startOfDay(for: Date())
 
         // Build the array of rates
@@ -53,7 +53,7 @@ struct AgileRates: View {
         midnightTimer?.invalidate()
 
         // find the next midnight
-        let calendar = Calendar.current
+        let calendar = GloberHelper.shared.sharedCalendar
         if let nextMidnight = calendar.nextDate(after: Date(),
                                                 matching: DateComponents(hour: 0, minute: 0, second: 0),
                                                 matchingPolicy: .strict)

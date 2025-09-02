@@ -16,6 +16,7 @@ enum LoadingType {
     @Published var userPostcode = UserDefaults.standard.string(forKey: "postcode") ?? ""
     @Published var ratesResponse: AppRatesResponse?
     @Published var currentRate: CurrentRate?
+    @Published var generationMix: RenewablesMix? = nil
 
     func setPostcode(postcode: String) {
         userPostcode = postcode
@@ -24,6 +25,22 @@ enum LoadingType {
         GloberHelper.shared.logger.info("Setting postcode to \(postcode)")
 
         fetchTimeline()
+    }
+
+    func fetchGenerationMix() {
+        Task {
+            do {
+                let generationMixResponse = try await NesoService.shared.fetchCurrentGenerationMix()
+                await MainActor.run {
+                    let solarType = generationMixResponse.first(where: { $0.fuelType == "solar" })
+                    let windType = generationMixResponse.first(where: { $0.fuelType == "wind" })
+
+                    self.generationMix = RenewablesMix(solar: solarType?.percentage ?? 0, wind: windType?.percentage ?? 0)
+                }
+            } catch {
+                self.generationMix = nil
+            }
+        }
     }
 
     func fetchTimeline() {
@@ -43,7 +60,7 @@ enum LoadingType {
     // This function is for updating the UI every 30 minutes. 11:30 12:00 12:30 ...
 
     private func updateRatesEveryHalfHour() {
-        let calendar = Calendar.current
+        let calendar = GloberHelper.shared.sharedCalendar
         let now = Date()
 
         func updateCurrentRate() {
@@ -66,6 +83,18 @@ enum LoadingType {
                 return
             }
 
+            // tomorrow's rate
+            let tomorrow = calendar.date(byAdding: .day, value: 1, to: now)!
+            let tomorrowRates = ratesResponse.unitRates.filter { rate in
+                calendar.isDate(rate.validFrom, inSameDayAs: tomorrow)
+            }
+            // If tomorrow rate is not ready after 4pm, refresh
+            var lol = calendar.component(.hour, from: now)
+            if calendar.component(.hour, from: now) >= 16, tomorrowRates.isEmpty {
+                fetchTimeline()
+                return
+            }
+
             let rate = ratesResponse.unitRates.first(where: { item in
                 item.validFrom <= now
                     && item.validTo > now
@@ -73,7 +102,6 @@ enum LoadingType {
 
             if let currentRate = rate {
                 // Calculate average price for the current day
-                let calendar = Calendar.current
                 let today = calendar.startOfDay(for: now)
                 let todaysRates = ratesResponse.unitRates.filter { rate in
                     calendar.isDate(rate.validFrom, inSameDayAs: today)
@@ -95,6 +123,7 @@ enum LoadingType {
 
         let timeInterval = nextInterval.timeIntervalSince(now)
         updateCurrentRate()
+        fetchGenerationMix()
         DispatchQueue.main.asyncAfter(deadline: .now() + timeInterval) {
             Task { @MainActor in
                 // Update current rate

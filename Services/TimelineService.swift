@@ -109,7 +109,7 @@ class TimelineService: RateResponseHandler {
     }
 
     func networkError() -> Timeline<OctopusWidgetEntry> {
-        let retry = Calendar.current.date(
+        let retry = GloberHelper.shared.sharedCalendar.date(
             byAdding: .minute,
             value: 15,
             to: Date(),

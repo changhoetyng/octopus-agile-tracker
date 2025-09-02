@@ -62,7 +62,7 @@ struct GreetingView: View {
     }
 
     func generateGreeting() -> String {
-        let hour = Calendar.current.component(.hour, from: Date())
+        let hour = GloberHelper.shared.sharedCalendar.component(.hour, from: Date())
         if hour >= 4, hour < 12 {
             return "Good Morning!"
         } else if hour >= 12, hour < 16 {

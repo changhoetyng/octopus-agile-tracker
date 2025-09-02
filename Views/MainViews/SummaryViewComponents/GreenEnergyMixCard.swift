@@ -25,7 +25,7 @@ struct GreenEnergyMixCard: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundColor(
-                    textColor(percentageThreshold: 50, percentage: percentage),
+                    textColor(percentageThreshold: 25, percentage: percentage),
                 )
             Spacer()
         }
@@ -35,12 +35,12 @@ struct GreenEnergyMixCard: View {
         CardView(bottomText: "Green Energy Mix") {
             HStack(alignment: .top, spacing: 32) {
                 VStack(spacing: 8) {
-                    renewableEnergyMix(icon: "WindIcon", percentage: 100)
-                    renewableEnergyMix(icon: "SunIcon", percentage: 0)
+                    renewableEnergyMix(icon: "WindIcon", percentage: appState.generationMix?.wind ?? 0)
+                    renewableEnergyMix(icon: "SunIcon", percentage: appState.generationMix?.solar ?? 0)
                 }
 
                 VStack(spacing: 3) {
-                    Text("50%")
+                    Text("\(Int(appState.generationMix?.total ?? 0))%")
                         .font(.system(size: 26, weight: .bold))
                         .foregroundColor(
                             textColor(percentageThreshold: 10, percentage: 50),

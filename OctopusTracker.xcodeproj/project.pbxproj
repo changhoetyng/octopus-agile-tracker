@@ -63,6 +63,7 @@
 		65048BAF2E147B10003AAA97 /* Exceptions for "Services" folder in "OctopusPricingWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				NesoService.swift,
 				RateService.swift,
 				TimelineService.swift,
 			);
@@ -72,6 +73,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				GridSupplyPoint.swift,
+				Neso.swift,
 				UnitRates.swift,
 			);
 			target = 65B600DF2E05D2F200C3E362 /* OctopusPricingWidgetExtension */;
