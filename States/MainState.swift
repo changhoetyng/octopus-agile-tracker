@@ -9,6 +9,7 @@ import SwiftUI
 
 enum LoadingType {
     case fetchTimeline
+    case fetchGenerationMix
 }
 
 @MainActor class AppState: ObservableObject {
@@ -28,17 +29,18 @@ enum LoadingType {
     }
 
     func fetchGenerationMix() {
-        Task {
+        isPriceDataLoading.insert(LoadingType.fetchGenerationMix)
+        Task { @MainActor in
             do {
                 let generationMixResponse = try await NesoService.shared.fetchCurrentGenerationMix()
-                await MainActor.run {
-                    let solarType = generationMixResponse.first(where: { $0.fuelType == "solar" })
-                    let windType = generationMixResponse.first(where: { $0.fuelType == "wind" })
+                let solarType = generationMixResponse.first(where: { $0.fuelType == "solar" })
+                let windType = generationMixResponse.first(where: { $0.fuelType == "wind" })
 
-                    self.generationMix = RenewablesMix(solar: solarType?.percentage ?? 0, wind: windType?.percentage ?? 0)
-                }
+                self.generationMix = RenewablesMix(solar: solarType?.percentage ?? 0, wind: windType?.percentage ?? 0)
+                self.isPriceDataLoading.remove(LoadingType.fetchGenerationMix)
             } catch {
                 self.generationMix = nil
+                self.isPriceDataLoading.remove(LoadingType.fetchGenerationMix)
             }
         }
     }
@@ -89,7 +91,6 @@ enum LoadingType {
                 calendar.isDate(rate.validFrom, inSameDayAs: tomorrow)
             }
             // If tomorrow rate is not ready after 4pm, refresh
-            var lol = calendar.component(.hour, from: now)
             if calendar.component(.hour, from: now) >= 16, tomorrowRates.isEmpty {
                 fetchTimeline()
                 return
