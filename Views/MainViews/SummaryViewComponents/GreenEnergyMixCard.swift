@@ -48,7 +48,7 @@ struct GreenEnergyMixCard: View {
                     Text("Total").font(.system(size: 17, weight: .bold)).opacity(0.5)
                 }
             }.skeletonLoadingView(isLoading:
-                !appState.isPriceDataLoading.contains(LoadingType.fetchGenerationMix) ||
+                appState.isPriceDataLoading.contains(LoadingType.fetchGenerationMix) ||
                     (appState.generationMix == nil))
         }
     }

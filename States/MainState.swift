@@ -30,14 +30,16 @@ enum LoadingType {
 
     func fetchGenerationMix() {
         isPriceDataLoading.insert(LoadingType.fetchGenerationMix)
-        Task { @MainActor in
+        Task {
             do {
                 let generationMixResponse = try await NesoService.shared.fetchCurrentGenerationMix()
-                let solarType = generationMixResponse.first(where: { $0.fuelType == "solar" })
-                let windType = generationMixResponse.first(where: { $0.fuelType == "wind" })
+                await MainActor.run {
+                    let solarType = generationMixResponse.first(where: { $0.fuelType == "solar" })
+                    let windType = generationMixResponse.first(where: { $0.fuelType == "wind" })
+                    self.generationMix = RenewablesMix(solar: solarType?.percentage ?? 0, wind: windType?.percentage ?? 0)
+                    self.isPriceDataLoading.remove(LoadingType.fetchGenerationMix)
 
-                self.generationMix = RenewablesMix(solar: solarType?.percentage ?? 0, wind: windType?.percentage ?? 0)
-                self.isPriceDataLoading.remove(LoadingType.fetchGenerationMix)
+                }
             } catch {
                 self.generationMix = nil
                 self.isPriceDataLoading.remove(LoadingType.fetchGenerationMix)
